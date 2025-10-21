@@ -1,0 +1,14 @@
+
+proyecto/
+├── source.config.ts          # Define las fuentes MDX (almuerzos, ecotrueque, hoteles)
+├── lib/
+│   └── source.ts             # Crea los loaders de Fumadocs
+├── content/
+│   ├── almuerzos/docs/       # Contenido MDX de Almuerzos
+│   ├── ecotrueque/docs/      # Contenido MDX de Ecotrueque
+│   ├── hoteles/docs/         # Contenido MDX de Hoteles
+│   └── shared/               # Contenido compartido
+└── app/
+    ├── almuerzos/docs/[[...slug]]/page.tsx    # Usa almuerzosDocs
+    ├── ecotrueque/docs/[[...slug]]/page.tsx   # Usa ecotruequesDocs
+    └── hoteles/docs/[[...slug]]/page.tsx      # Usa hotelesDocs
