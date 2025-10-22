@@ -30,16 +30,23 @@ export default defineConfig({
     },
 })
 
+const baseSchema = frontmatterSchema.extend({
+    links: z.object({
+        doc: z.string().optional(),
+        api: z.string().optional(),
+    }).optional(),
+})
+
 export const docs = defineDocs({
     dir: "content/docs",
     docs: {
-        schema: frontmatterSchema.extend({
-            links: z
-                .object({
-                    doc: z.string().optional(),
-                    api: z.string().optional(),
-                })
-                .optional(),
-        }),
+        schema: baseSchema
+    },
+})
+
+export const almuerzos = defineDocs({
+    dir: "content/almuerzos/docs",
+    docs: {
+        schema: baseSchema,
     },
 })

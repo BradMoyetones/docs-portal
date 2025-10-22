@@ -47,11 +47,11 @@ export function SiteHeader() {
                 navItems={siteConfig.navItems}
               />
             </div>
-            <Separator
+            {/* <Separator
               orientation="vertical"
               className="ml-2 hidden lg:block"
-            />
-            <GitHubLink />
+            /> */}
+            {/* <GitHubLink /> */}
             <Separator orientation="vertical" className="3xl:flex hidden" />
             <SiteConfig className="3xl:flex hidden" />
             <Separator orientation="vertical" />

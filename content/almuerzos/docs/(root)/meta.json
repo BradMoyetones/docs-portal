@@ -1,0 +1,20 @@
+{
+  "title": "Get Started",
+  "pages": [
+    "index",
+    "[Installation](/almuerzos/docs/installation)",
+    "components-json",
+    "theming",
+    "[Dark Mode](/almuerzos/docs/dark-mode)",
+    "[CLI](/almuerzos/docs/cli)",
+    "monorepo",
+    "typography",
+    "v0",
+    "javascript",
+    "blocks",
+    "figma",
+    "changelog",
+    "[llms.txt](/llms.txt)",
+    "legacy"
+  ]
+}

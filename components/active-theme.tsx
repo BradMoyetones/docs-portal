@@ -24,19 +24,32 @@ export function ActiveThemeProvider({
   children: ReactNode
   initialTheme?: string
 }) {
-  const [activeTheme, setActiveTheme] = useState<string>(
-    () => initialTheme || DEFAULT_THEME
-  )
+  const [activeTheme, setActiveTheme] = useState<string>(() => {
+    // Carga inicial: prioridad localStorage > initialTheme > DEFAULT_THEME
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("activeTheme")
+      if (savedTheme) return savedTheme
+    }
+    return initialTheme || DEFAULT_THEME
+  })
 
   useEffect(() => {
-    Array.from(document.body.classList)
+    // Guarda el tema actual en localStorage
+    localStorage.setItem("activeTheme", activeTheme)
+
+    // Limpia las clases previas del body
+    Array.from(document.documentElement.classList)
       .filter((className) => className.startsWith("theme-"))
       .forEach((className) => {
-        document.body.classList.remove(className)
+        document.documentElement.classList.remove(className)
       })
-    document.body.classList.add(`theme-${activeTheme}`)
+
+    // Aplica la nueva clase del tema
+    document.documentElement.classList.add(`theme-${activeTheme}`)
+
+    // Si el tema incluye "-scaled", añade también esa clase
     if (activeTheme.endsWith("-scaled")) {
-      document.body.classList.add("theme-scaled")
+      document.documentElement.classList.add("theme-scaled")
     }
   }, [activeTheme])
 

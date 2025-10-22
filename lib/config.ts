@@ -6,6 +6,7 @@ export const siteConfig = {
     "Documentación de cada uno de los proyectos desarrollados en el Parque Jaime Duque.",
   links: {
     twitter: "https://twitter.com/ParqJaimeduque",
+    instagram: "https://www.instagram.com/its.bradn",
     github: "https://github.com/BradParqueJaimeDuque",
   },
   navItems: [

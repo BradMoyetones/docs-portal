@@ -18,30 +18,30 @@ import {
 } from "@/registry/new-york-v4/ui/sidebar"
 
 const TOP_LEVEL_SECTIONS = [
-  { name: "Get Started", href: "/docs" },
+  { name: "Get Started", href: "/almuerzos/docs" },
   {
     name: "Components",
-    href: "/docs/components",
+    href: "/almuerzos/docs/components",
   },
   {
     name: "Registry",
-    href: "/docs/registry",
+    href: "/almuerzos/docs/registry",
   },
   {
     name: "MCP Server",
-    href: "/docs/mcp",
+    href: "/almuerzos/docs/mcp",
   },
   {
     name: "Forms",
-    href: "/docs/forms",
+    href: "/almuerzos/docs/forms",
   },
   {
     name: "Changelog",
-    href: "/docs/changelog",
+    href: "/almuerzos/docs/changelog",
   },
 ]
 const EXCLUDED_SECTIONS = ["installation", "dark-mode"]
-const EXCLUDED_PAGES = ["/docs", "/docs/changelog"]
+const EXCLUDED_PAGES = ["/almuerzos/docs", "/almuerzos/docs/changelog"]
 
 export function DocsSidebar({
   tree,

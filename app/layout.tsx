@@ -76,6 +76,12 @@ export default function RootLayout({
                 if (localStorage.layout) {
                   document.documentElement.classList.add('layout-' + localStorage.layout)
                 }
+
+                const savedTheme = localStorage.getItem('activeTheme') || 'blue';
+                document.documentElement.classList.add('theme-' + savedTheme);
+                if (savedTheme.endsWith('-scaled')) {
+                  document.documentElement.classList.add('theme-scaled');
+                }
               } catch (_) {}
             `,
           }}
@@ -84,13 +90,13 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "text-foreground group/body theme-blue overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
+          "text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
           fontVariables
         )}
       >
         <ThemeProvider>
           <LayoutProvider>
-            <ActiveThemeProvider initialTheme="blue">
+            <ActiveThemeProvider>
               {children}
               <TailwindIndicator />
               <Toaster position="top-center" />
