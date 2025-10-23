@@ -1,0 +1,243 @@
+---
+title: API
+description: Documentación completa de la API RESTful del sistema Hoteles
+---
+
+# API del Sistema Hoteles
+
+Documentación técnica de todos los endpoints disponibles en la API del sistema de gestión de cortesías para hoteles aliados.
+
+## Introducción
+
+La API del sistema **Hoteles** está construida con **Slim Framework** y sigue los principios de arquitectura REST. Utiliza **JWT** para la autenticación y autorización, y **Eloquent ORM** para la gestión de datos.
+
+## Características de la API
+
+<div className="grid gap-4 sm:grid-cols-2 mt-6">
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">RESTful</h3>
+    <p className="text-sm text-muted-foreground">
+      Arquitectura REST con endpoints semánticos y uso correcto de métodos HTTP.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Autenticación JWT</h3>
+    <p className="text-sm text-muted-foreground">
+      Tokens seguros para autenticación stateless y control de sesiones.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Respuestas JSON</h3>
+    <p className="text-sm text-muted-foreground">
+      Todas las respuestas están en formato JSON con estructura consistente.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Manejo de Errores</h3>
+    <p className="text-sm text-muted-foreground">
+      Códigos de estado HTTP apropiados y mensajes de error descriptivos.
+    </p>
+  </div>
+</div>
+
+## Stack Tecnológico
+
+- **Slim Framework 4**: Microframework PHP para APIs
+- **Eloquent ORM**: Gestión de base de datos con modelos elegantes
+- **JWT (Firebase PHP-JWT)**: Autenticación basada en tokens
+- **PSR-7**: Estándar de mensajes HTTP
+- **Composer**: Gestión de dependencias
+
+## Estructura de Respuestas
+
+Todas las respuestas de la API siguen una estructura consistente:
+
+### Respuesta Exitosa
+
+```json
+{
+  "success": true,
+  "data": {
+    // Datos solicitados
+  },
+  "message": "Operación exitosa"
+}
+```
+
+### Respuesta de Error
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Descripción del error"
+  }
+}
+```
+
+## Autenticación
+
+La API utiliza JWT (JSON Web Tokens) para la autenticación. Después de iniciar sesión, debes incluir el token en el header de cada petición:
+
+```
+Authorization: Bearer {tu_token_jwt}
+```
+
+## Endpoints Principales
+
+A continuación se presenta un resumen de los principales grupos de endpoints disponibles en la API:
+
+### Autenticación
+
+<div className="rounded-lg border bg-card p-4 mt-4">
+  <code className="text-sm">POST /api/auth/login</code>
+  <p className="text-sm text-muted-foreground mt-2">Iniciar sesión y obtener token JWT</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">POST /api/auth/register</code>
+  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo usuario en el sistema</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">POST /api/auth/refresh</code>
+  <p className="text-sm text-muted-foreground mt-2">Renovar token JWT expirado</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">POST /api/auth/logout</code>
+  <p className="text-sm text-muted-foreground mt-2">Cerrar sesión e invalidar token</p>
+</div>
+
+### Usuarios
+
+<div className="rounded-lg border bg-card p-4 mt-4">
+  <code className="text-sm">GET /api/users</code>
+  <p className="text-sm text-muted-foreground mt-2">Listar todos los usuarios del sistema</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">GET /api/users/{'{id}'}</code>
+  <p className="text-sm text-muted-foreground mt-2">Obtener información de un usuario específico</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">PUT /api/users/{'{id}'}</code>
+  <p className="text-sm text-muted-foreground mt-2">Actualizar información de un usuario</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">DELETE /api/users/{'{id}'}</code>
+  <p className="text-sm text-muted-foreground mt-2">Eliminar un usuario del sistema</p>
+</div>
+
+### Hoteles
+
+<div className="rounded-lg border bg-card p-4 mt-4">
+  <code className="text-sm">GET /api/hotels</code>
+  <p className="text-sm text-muted-foreground mt-2">Listar todos los hoteles aliados</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">POST /api/hotels</code>
+  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo hotel aliado</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">GET /api/hotels/{'{id}'}</code>
+  <p className="text-sm text-muted-foreground mt-2">Obtener información detallada de un hotel</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">PUT /api/hotels/{'{id}'}</code>
+  <p className="text-sm text-muted-foreground mt-2">Actualizar información de un hotel</p>
+</div>
+
+### Huéspedes
+
+<div className="rounded-lg border bg-card p-4 mt-4">
+  <code className="text-sm">GET /api/guests</code>
+  <p className="text-sm text-muted-foreground mt-2">Listar todos los huéspedes registrados</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">POST /api/guests</code>
+  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo huésped para cortesía</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">GET /api/guests/search</code>
+  <p className="text-sm text-muted-foreground mt-2">Buscar huésped por documento para verificar cortesía</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">PUT /api/guests/{'{id}'}/redeem</code>
+  <p className="text-sm text-muted-foreground mt-2">Marcar cortesía como redimida en taquilla</p>
+</div>
+
+### Reportes
+
+<div className="rounded-lg border bg-card p-4 mt-4">
+  <code className="text-sm">GET /api/reports/hotels</code>
+  <p className="text-sm text-muted-foreground mt-2">Generar reporte de cortesías por hotel</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">GET /api/reports/period</code>
+  <p className="text-sm text-muted-foreground mt-2">Generar reporte por período de tiempo</p>
+</div>
+
+<div className="rounded-lg border bg-card p-4 mt-2">
+  <code className="text-sm">GET /api/reports/export</code>
+  <p className="text-sm text-muted-foreground mt-2">Exportar reportes en formato Excel o PDF</p>
+</div>
+
+## Códigos de Estado HTTP
+
+La API utiliza los siguientes códigos de estado HTTP:
+
+| Código | Significado | Uso |
+|--------|-------------|-----|
+| `200` | OK | Petición exitosa |
+| `201` | Created | Recurso creado exitosamente |
+| `400` | Bad Request | Datos de entrada inválidos |
+| `401` | Unauthorized | Token inválido o ausente |
+| `403` | Forbidden | Sin permisos para la acción |
+| `404` | Not Found | Recurso no encontrado |
+| `422` | Unprocessable Entity | Error de validación |
+| `500` | Internal Server Error | Error del servidor |
+
+## Paginación
+
+Los endpoints que retornan listas implementan paginación automática:
+
+```json
+{
+  "success": true,
+  "data": [...],
+  "pagination": {
+    "current_page": 1,
+    "per_page": 20,
+    "total": 150,
+    "total_pages": 8
+  }
+}
+```
+
+## Próximos Pasos
+
+Explora la documentación detallada de cada endpoint:
+
+- [Autenticación](/hoteles/api/auth) - Endpoints de login, registro y gestión de tokens
+- [Usuarios](/hoteles/api/users) - Gestión de usuarios del sistema
+- [Hoteles](/hoteles/api/hotels) - CRUD de hoteles aliados
+- [Huéspedes](/hoteles/api/guests) - Registro y verificación de cortesías
+- [Reportes](/hoteles/api/reports) - Generación de estadísticas y reportes
+
+<Callout type="info">
+**Nota**: Cada endpoint está documentado con ejemplos de peticiones, respuestas y posibles errores.
+</Callout>

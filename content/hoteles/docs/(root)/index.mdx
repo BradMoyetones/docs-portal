@@ -1,0 +1,130 @@
+---
+title: Hoteles
+description: Sistema integral para la gestión de cortesías y descuentos aplicados a huéspedes de hoteles aliados que visitan el Parque Jaime Duque.
+---
+
+## Descripción del Proyecto
+
+El proyecto **Hoteles** es una aplicación web desarrollada para gestionar el convenio que el Parque Jaime Duque mantiene con diversos hoteles de la región. Este convenio permite ofrecer cortesías (descuentos) a los huéspedes de estos hoteles aliados cuando visitan el parque.
+
+El sistema facilita el registro de huéspedes por parte de los hoteles y permite a las taquilleras del parque verificar rápidamente si un visitante es elegible para recibir el descuento en la compra de brazaletes.
+
+## Problemática Anterior
+
+Antes de la implementación de este sistema, el proceso de gestión de cortesías presentaba múltiples inconvenientes:
+
+<Callout className="mt-6 mb-6 border-yellow-600 bg-blue-50 dark:border-yellow-900 dark:bg-yellow-950 [&_code]:bg-yellow-100 dark:[&_code]:bg-yellow-900">
+**Proceso Manual Ineficiente**
+
+- Los hoteles enviaban la información de huéspedes por correo electrónico o WhatsApp
+- El área comercial debía transcribir manualmente estos datos a una matriz de Excel
+- Las taquilleras consultaban la matriz para verificar cada cortesía
+- Doble proceso: recepción de información + registro manual
+- Alto riesgo de errores humanos en la transcripción
+- Dificultad para mantener la información actualizada en tiempo real
+- Falta de trazabilidad y auditoría de los registros
+</Callout>
+
+## Solución Implementada
+
+El sistema **Hoteles** digitaliza y automatiza completamente este proceso:
+
+- **Registro directo**: Los hoteles pueden registrar a sus huéspedes directamente en el sistema
+- **Consulta en tiempo real**: Las taquilleras verifican instantáneamente la elegibilidad
+- **Trazabilidad completa**: Cada registro queda documentado con fecha, hora y usuario
+- **Reportes automáticos**: Generación de estadísticas y reportes para el área comercial
+- **Gestión de convenios**: Administración centralizada de hoteles aliados
+
+## Stack Tecnológico
+
+### Backend
+
+El backend fue desarrollado utilizando tecnologías PHP modernas y robustas:
+
+- **PHP**: Lenguaje de programación principal
+- **Slim Framework**: Microframework para crear APIs RESTful ligeras y eficientes
+- **Eloquent ORM**: ORM de Laravel utilizado de forma standalone para la gestión de base de datos
+- **Blade**: Motor de plantillas (disponible pero no utilizado en producción)
+- **JWT (JSON Web Tokens)**: Sistema de autenticación y autorización de usuarios
+
+### Frontend
+
+El frontend fue construido con las tecnologías más modernas de React:
+
+- **React 18**: Biblioteca principal para la construcción de interfaces
+- **Vite**: Build tool ultrarrápido para desarrollo y producción
+- **TypeScript**: Superset de JavaScript para tipado estático y mayor seguridad
+- **shadcn/ui**: Sistema de componentes para una interfaz visual atractiva y consistente
+- **Tailwind CSS**: Framework de utilidades CSS para estilos rápidos y responsivos
+
+## Características Principales
+
+<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Gestión de Hoteles</h3>
+    <p className="text-sm text-muted-foreground">
+      Administración completa de hoteles aliados, activación/desactivación de convenios y configuración de cortesías.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Registro de Huéspedes</h3>
+    <p className="text-sm text-muted-foreground">
+      Interfaz intuitiva para que los hoteles registren a sus huéspedes que visitarán el parque.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Verificación en Taquilla</h3>
+    <p className="text-sm text-muted-foreground">
+      Búsqueda rápida por documento para verificar cortesías al momento de la compra.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Autenticación Segura</h3>
+    <p className="text-sm text-muted-foreground">
+      Sistema de roles y permisos con JWT para garantizar la seguridad de la información.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Reportes y Estadísticas</h3>
+    <p className="text-sm text-muted-foreground">
+      Generación de reportes detallados por hotel, fecha y tipo de cortesía aplicada.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Auditoría Completa</h3>
+    <p className="text-sm text-muted-foreground">
+      Registro de todas las acciones realizadas en el sistema para trazabilidad total.
+    </p>
+  </div>
+</div>
+
+## Beneficios
+
+- **Eficiencia operativa**: Reducción del tiempo de registro y verificación en más del 80%
+- **Eliminación de errores**: No más errores de transcripción manual
+- **Mejor experiencia**: Proceso más rápido para huéspedes y taquilleras
+- **Control total**: Visibilidad completa de todas las cortesías aplicadas
+- **Escalabilidad**: Fácil incorporación de nuevos hoteles aliados
+
+## Próximos Pasos
+
+<Steps>
+
+<Step>Explorar la API</Step>
+
+Conoce todos los endpoints disponibles en la [documentación de la API](/hoteles/api).
+
+<Step>Revisar el Frontend</Step>
+
+Descubre la arquitectura y componentes del frontend en la [documentación del Frontend](/hoteles/front-end).
+
+<Step>Guías de Usuario</Step>
+
+Consulta las guías específicas para cada rol de usuario en el sistema.
+
+</Steps>

@@ -1,77 +1,76 @@
 ---
 title: Introducción
-description: shadcn/ui is a set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks and AI models. Open Source. Open Code.
+description: Sistema de documentación para las aplicaciones internas del Parque Jaime Duque. Una colección de herramientas digitales diseñadas para optimizar la gestión operativa y administrativa del parque.
 ---
 
-**This is not a component library. It is how you build your component library.**
+**Este es el centro de documentación de los sistemas internos del Parque Jaime Duque.**
 
-You know how most traditional component libraries work: you install a package from NPM, import the components, and use them in your app.
+En el Parque Jaime Duque, hemos desarrollado un ecosistema de aplicaciones internas que facilitan la gestión diaria de nuestras operaciones. Desde el registro de almuerzos hasta la administración de la biblioteca, cada sistema está diseñado para resolver necesidades específicas de nuestros colaboradores y visitantes.
 
-This approach works well until you need to customize a component to fit your design system or require one that isn’t included in the library. **Often, you end up wrapping library components, writing workarounds to override styles, or mixing components from different libraries with incompatible APIs.**
+Esta documentación está construida alrededor de los siguientes principios:
 
-This is what shadcn/ui aims to solve. It is built around the following principles:
+- **Centralización:** Toda la información de nuestros sistemas en un solo lugar.
+- **Accesibilidad:** Documentación clara y fácil de entender para todos los usuarios.
+- **Actualización Continua:** Mantenemos la información al día con cada mejora de los sistemas.
+- **Orientación Práctica:** Guías paso a paso para el uso efectivo de cada aplicación.
+- **Integración:** Sistemas diseñados para trabajar juntos y compartir información cuando es necesario.
 
-- **Open Code:** The top layer of your component code is open for modification.
-- **Composition:** Every component uses a common, composable interface, making them predictable.
-- **Distribution:** A flat-file schema and command-line tool make it easy to distribute components.
-- **Beautiful Defaults:** Carefully chosen default styles, so you get great design out-of-the-box.
-- **AI-Ready:** Open code for LLMs to read, understand, and improve.
+## Centralización
 
-## Open Code
+Todos nuestros sistemas internos están documentados en este portal único. Esto significa:
 
-shadcn/ui hands you the actual component code. You have full control to customize and extend the components to your needs. This means:
+- **Fácil Acceso:** Encuentra rápidamente la información que necesitas sobre cualquier sistema.
+- **Navegación Intuitiva:** Organización lógica por categorías y funcionalidades.
+- **Búsqueda Eficiente:** Localiza procedimientos específicos sin perder tiempo.
 
-- **Full Transparency:** You see exactly how each component is built.
-- **Easy Customization:** Modify any part of a component to fit your design and functionality requirements.
-- **AI Integration:** Access to the code makes it straightforward for LLMs to read, understand, and even improve your components.
+_En lugar de buscar en múltiples documentos o preguntar a diferentes personas, aquí encuentras todo lo que necesitas saber sobre nuestras aplicaciones internas._
 
-_In a typical library, if you need to change a button’s behavior, you have to override styles or wrap the component. With shadcn/ui, you simply edit the button code directly._
+## Accesibilidad
 
-<Accordion collapsible>
-  <AccordionItem value="faq-1" className="border-none">
-    <AccordionTrigger>
-      How do I pull upstream updates in an Open Code approach?
-    </AccordionTrigger>
-    <AccordionContent>
-      <p>
-        shadcn/ui follows a headless component architecture. This means the core
-        of your app can receive fixes by updating your dependencies, for
-        instance, radix-ui or input-otp.
-      </p>
-      <p className="mt-4">
-        The topmost layer, i.e., the one closest to your design system, is not
-        coupled with the implementation of the library. It stays open for
-        modification.
-      </p>
-    </AccordionContent>
-  </AccordionItem>
-</Accordion>
+Cada sistema está documentado pensando en todos los niveles de usuarios, desde administradores hasta colaboradores que lo usan ocasionalmente:
 
-## Composition
+- **Lenguaje Claro:** Explicaciones sin tecnicismos innecesarios.
+- **Ejemplos Visuales:** Capturas de pantalla y diagramas cuando son útiles.
+- **Casos de Uso Reales:** Escenarios prácticos del día a día en el parque.
 
-Every component in shadcn/ui shares a common, composable interface. **If a component does not exist, we bring it in, make it composable, and adjust its style to match and work with the rest of the design system.**
+_Ya seas del área de comunicaciones, operaciones, o cualquier otra área, encontrarás la información presentada de forma comprensible._
 
-_A shared, composable interface means it's predictable for both your team and LLMs. You are not learning different APIs for every new component. Even for third-party ones._
+## Actualización Continua
 
-## Distribution
+Nuestros sistemas evolucionan constantemente para mejorar la experiencia de los usuarios. Esta documentación se actualiza en paralelo:
 
-shadcn/ui is also a code distribution system. It defines a schema for components and a CLI to distribute them.
+- **Cambios Documentados:** Cada nueva funcionalidad viene con su documentación.
+- **Historial de Versiones:** Registro de mejoras y cambios importantes.
+- **Retroalimentación:** Incorporamos sugerencias de los usuarios para mejorar la documentación.
 
-- **Schema:** A flat-file structure that defines the components, their dependencies, and properties.
-- **CLI:** A command-line tool to distribute and install components across projects with cross-framework support.
+_Cuando un sistema se actualiza, la documentación también lo hace, asegurando que siempre tengas información precisa._
 
-_You can use the schema to distribute your components to other projects or have AI generate completely new components based on existing schema._
+## Orientación Práctica
 
-## Beautiful Defaults
+La documentación no solo explica qué hace cada sistema, sino cómo usarlo efectivamente:
 
-shadcn/ui comes with a large collection of components that have carefully chosen default styles. They are designed to look good on their own and to work well together as a consistent system:
+- **Guías Paso a Paso:** Instrucciones detalladas para cada proceso.
+- **Solución de Problemas:** Respuestas a preguntas frecuentes y errores comunes.
+- **Mejores Prácticas:** Recomendaciones para aprovechar al máximo cada herramienta.
 
-- **Good Out-of-the-Box:** Your UI has a clean and minimal look without extra work.
-- **Unified Design:** Components naturally fit with one another. Each component is built to match the others, keeping your UI consistent.
-- **Easily Customizable:** If you want to change something, it's simple to override and extend the defaults.
+_No solo aprenderás a usar los sistemas, sino a usarlos de la manera más eficiente posible._
 
-## AI-Ready
+## Integración
 
-The design of shadcn/ui makes it easy for AI tools to work with your code. Its open code and consistent API allow AI models to read, understand, and even generate new components.
+Muchos de nuestros sistemas están diseñados para trabajar juntos, compartiendo información cuando es necesario:
 
-_An AI model can learn how your components work and suggest improvements or even create new components that integrate with your existing design._
+- **Ecotrueque + Almuerzos:** El peso disponible en Ecotrueque se descuenta automáticamente en el registro de almuerzos.
+- **Carnets Centralizados:** Todos los colaboradores pueden acceder a su carnet desde un solo sistema.
+- **Datos Compartidos:** Información de colaboradores sincronizada entre sistemas cuando es relevante.
+
+_Los sistemas no trabajan en silos, sino como un ecosistema integrado que facilita las operaciones del parque._
+
+## Nuestros Sistemas
+
+El Parque Jaime Duque cuenta con aplicaciones para diferentes áreas operativas:
+
+- **Gestión de Colaboradores:** Almuerzos, Ecotrueque, Carnets, Porteros
+- **Atención a Visitantes:** Registro de Visitantes, Hoteles
+- **Recursos Internos:** Biblioteca Nuevos Horizontes
+
+_Cada sistema está diseñado con las necesidades específicas de su área, pero todos comparten el objetivo de hacer más eficiente la operación del parque._

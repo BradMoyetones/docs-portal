@@ -50,3 +50,10 @@ export const almuerzos = defineDocs({
         schema: baseSchema,
     },
 })
+
+export const hoteles = defineDocs({
+    dir: "content/hoteles/docs",
+    docs: {
+        schema: baseSchema,
+    },
+})

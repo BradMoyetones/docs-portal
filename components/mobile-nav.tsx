@@ -16,26 +16,10 @@ import {
 } from "@/registry/new-york-v4/ui/popover"
 
 const TOP_LEVEL_SECTIONS = [
-  { name: "Get Started", href: "/docs" },
+  { name: "Empezar", href: "/docs" },
   {
-    name: "Components",
-    href: "/docs/components",
-  },
-  {
-    name: "Registry",
-    href: "/docs/registry",
-  },
-  {
-    name: "MCP Server",
-    href: "/docs/mcp",
-  },
-  {
-    name: "Forms",
-    href: "/docs/forms",
-  },
-  {
-    name: "Changelog",
-    href: "/docs/changelog",
+    name: "Bibliotecas",
+    href: "/docs/libraries",
   },
 ]
 
@@ -96,7 +80,7 @@ export function MobileNav({
             </div>
             <div className="flex flex-col gap-3">
               <MobileLink href="/" onOpenChange={setOpen}>
-                Home
+                Inicio
               </MobileLink>
               {items.map((item, index) => (
                 <MobileLink key={index} href={item.href} onOpenChange={setOpen}>
@@ -107,7 +91,7 @@ export function MobileNav({
           </div>
           <div className="flex flex-col gap-4">
             <div className="text-muted-foreground text-sm font-medium">
-              Sections
+              Secciones
             </div>
             <div className="flex flex-col gap-3">
               {TOP_LEVEL_SECTIONS.map(({ name, href }) => {

@@ -11,28 +11,16 @@ export const siteConfig = {
   },
   navItems: [
     {
-      href: "/docs/installation",
-      label: "Docs",
+      href: "/docs",
+      label: "Documentación",
     },
     {
-      href: "/docs/components",
-      label: "Components",
+      href: "/docs/projects",
+      label: "Proyectos",
     },
     {
-      href: "/blocks",
-      label: "Blocks",
-    },
-    {
-      href: "/charts/area",
-      label: "Charts",
-    },
-    {
-      href: "/themes",
-      label: "Themes",
-    },
-    {
-      href: "/colors",
-      label: "Colors",
+      href: "/docs/libraries",
+      label: "Bibliotecas",
     },
   ],
 }

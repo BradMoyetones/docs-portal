@@ -1,0 +1,283 @@
+---
+title: Frontend
+description: Documentación de la aplicación frontend del sistema Hoteles
+---
+
+## Introducción
+
+El frontend del sistema **Hoteles** es una aplicación web moderna y responsiva que proporciona interfaces intuitivas para todos los roles de usuario: administradores, personal de hoteles y taquilleras del parque.
+
+## Stack Tecnológico
+
+### Tecnologías Principales
+
+<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">React 18</h3>
+    <p className="text-sm text-muted-foreground">
+      Biblioteca principal para construir interfaces de usuario interactivas y componentes reutilizables.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">TypeScript</h3>
+    <p className="text-sm text-muted-foreground">
+      Tipado estático para mayor seguridad, autocompletado y detección temprana de errores.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Vite</h3>
+    <p className="text-sm text-muted-foreground">
+      Build tool ultrarrápido con HMR instantáneo para una experiencia de desarrollo óptima.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">shadcn/ui</h3>
+    <p className="text-sm text-muted-foreground">
+      Sistema de componentes accesibles y personalizables para una UI consistente y profesional.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">Tailwind CSS</h3>
+    <p className="text-sm text-muted-foreground">
+      Framework de utilidades CSS para estilos rápidos, responsivos y mantenibles.
+    </p>
+  </div>
+  
+  <div className="rounded-lg border bg-card p-6">
+    <h3 className="font-semibold mb-2">React Router</h3>
+    <p className="text-sm text-muted-foreground">
+      Enrutamiento declarativo para navegación fluida entre vistas de la aplicación.
+    </p>
+  </div>
+</div>
+
+### Librerías Adicionales
+
+- **Axios**: Cliente HTTP para comunicación con la API
+- **React Hook Form**: Gestión eficiente de formularios con validación
+- **Zod**: Validación de esquemas TypeScript-first
+- **TanStack Query**: Gestión de estado del servidor y caché
+- **date-fns**: Manipulación y formato de fechas
+- **Recharts**: Gráficos y visualización de datos
+- **Lucide React**: Iconos SVG consistentes y personalizables
+
+## Arquitectura del Proyecto
+
+```bash
+src/
+├── components/          # Componentes reutilizables
+│   ├── ui/             # Componentes de shadcn/ui
+│   ├── forms/          # Componentes de formularios
+│   ├── tables/         # Tablas de datos
+│   └── layout/         # Componentes de layout
+├── pages/              # Páginas/vistas de la aplicación
+│   ├── auth/           # Login, registro
+│   ├── dashboard/      # Panel principal
+│   ├── hotels/         # Gestión de hoteles
+│   ├── guests/         # Gestión de huéspedes
+│   └── reports/        # Reportes y estadísticas
+├── hooks/              # Custom hooks de React
+├── services/           # Servicios de API
+├── utils/              # Funciones utilitarias
+├── types/              # Definiciones de tipos TypeScript
+├── contexts/           # Contextos de React
+└── lib/                # Configuraciones y helpers
+```
+
+## Características Principales
+
+### Sistema de Autenticación
+
+- Login con JWT almacenado en localStorage
+- Protección de rutas privadas con HOC
+- Renovación automática de tokens
+- Manejo de sesiones expiradas
+
+### Gestión de Estado
+
+- **TanStack Query** para estado del servidor (datos de API)
+- **Context API** para estado global de autenticación
+- **React Hook Form** para estado de formularios
+- Caché inteligente de peticiones
+
+### Interfaz de Usuario
+
+- Diseño responsivo mobile-first
+- Tema claro/oscuro
+- Componentes accesibles (ARIA)
+- Feedback visual de acciones (toasts, loaders)
+- Tablas con paginación, ordenamiento y filtros
+
+### Optimización
+
+- Code splitting por rutas
+- Lazy loading de componentes
+- Imágenes optimizadas
+- Debouncing en búsquedas
+- Memoización de componentes costosos
+
+## Módulos Principales
+
+### Dashboard
+
+Panel principal con métricas y estadísticas en tiempo real:
+
+- Total de hoteles aliados activos
+- Cortesías registradas del mes
+- Cortesías redimidas vs pendientes
+- Gráficos de tendencias
+- Accesos rápidos a funciones principales
+
+### Gestión de Hoteles
+
+Módulo para administrar hoteles aliados:
+
+- Listado de hoteles con búsqueda y filtros
+- Formulario de registro de nuevos hoteles
+- Edición de información de hoteles
+- Activación/desactivación de convenios
+- Historial de cortesías por hotel
+
+### Gestión de Huéspedes
+
+Módulo para registro y verificación de cortesías:
+
+- Formulario de registro de huéspedes
+- Búsqueda rápida por documento
+- Verificación de elegibilidad
+- Redención de cortesías en taquilla
+- Historial de huéspedes
+
+### Reportes
+
+Módulo de análisis y reportes:
+
+- Reportes por hotel
+- Reportes por período
+- Estadísticas de uso
+- Exportación a Excel/PDF
+- Gráficos interactivos
+
+### Administración
+
+Panel de administración del sistema:
+
+- Gestión de usuarios
+- Roles y permisos
+- Configuración del sistema
+- Logs de auditoría
+
+## Flujos de Usuario
+
+### Flujo de Registro de Huésped (Hotel)
+
+<Steps>
+
+<Step>Iniciar Sesión</Step>
+
+El usuario del hotel inicia sesión con sus credenciales.
+
+<Step>Acceder a Registro</Step>
+
+Navega al módulo de registro de huéspedes.
+
+<Step>Completar Formulario</Step>
+
+Ingresa los datos del huésped: nombre, documento, fechas de estadía, etc.
+
+<Step>Confirmar Registro</Step>
+
+El sistema valida los datos y registra al huésped para cortesía.
+
+<Step>Confirmación</Step>
+
+Se muestra un mensaje de éxito y se puede imprimir un comprobante.
+
+</Steps>
+
+### Flujo de Verificación (Taquillera)
+
+<Steps>
+
+<Step>Búsqueda</Step>
+
+La taquillera busca al visitante por número de documento.
+
+<Step>Verificación</Step>
+
+El sistema muestra si el visitante tiene cortesía activa.
+
+<Step>Aplicar Descuento</Step>
+
+Si es elegible, se aplica el descuento en la compra de brazaletes.
+
+<Step>Redimir Cortesía</Step>
+
+Se marca la cortesía como redimida en el sistema.
+
+</Steps>
+
+## Componentes Destacados
+
+### HotelCard
+
+Tarjeta visual para mostrar información de un hotel:
+
+```tsx
+<HotelCard
+  hotel={hotelData}
+  onEdit={handleEdit}
+  onToggleStatus={handleToggle}
+/>
+```
+
+### GuestSearchBar
+
+Barra de búsqueda con autocompletado para huéspedes:
+
+```tsx
+<GuestSearchBar
+  onSearch={handleSearch}
+  onSelect={handleSelect}
+/>
+```
+
+### CourtesyBadge
+
+Badge visual para mostrar el estado de una cortesía:
+
+```tsx
+<CourtesyBadge status="active" />
+<CourtesyBadge status="redeemed" />
+<CourtesyBadge status="expired" />
+```
+
+### ReportChart
+
+Componente de gráfico para visualizar estadísticas:
+
+```tsx
+<ReportChart
+  data={reportData}
+  type="bar"
+  title="Cortesías por Hotel"
+/>
+```
+
+## Próximos Pasos
+
+Explora la documentación detallada de cada módulo:
+
+- [Componentes](/hoteles/front-end/components) - Catálogo completo de componentes
+- [Hooks](/hoteles/front-end/hooks) - Custom hooks disponibles
+- [Servicios](/hoteles/front-end/services) - Integración con la API
+- [Tipos](/hoteles/front-end/types) - Definiciones TypeScript
+- [Guías](/hoteles/front-end/guides) - Guías de desarrollo
+
+<Callout type="info">
+**Nota para Desarrolladores**: Asegúrate de seguir las convenciones de código y utilizar los componentes de shadcn/ui para mantener la consistencia visual.
+</Callout>

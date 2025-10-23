@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="container-wrapper px-4 xl:px-6">
         <div className="flex h-(--footer-height) items-center justify-between">
           <div className="text-muted-foreground w-full px-1 text-center text-xs leading-loose sm:text-sm">
-            Built by{" "}
+            Construido por{" "}
             <a
               href={siteConfig.links.instagram}
               target="_blank"
@@ -15,16 +15,16 @@ export function SiteFooter() {
             >
               Brad Moyetones
             </a>{" "}
-            at{" "}
+            en el{" "}
             <a
               href="https://parquejaimeduque.com"
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              Jaime Duque Park
+              Parque Jaime Duque
             </a>
-            . The source code is available on{" "}
+            . El código fuente está disponible en{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"

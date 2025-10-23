@@ -17,36 +17,29 @@ import {
   SidebarMenuItem,
 } from "@/registry/new-york-v4/ui/sidebar"
 
-const TOP_LEVEL_SECTIONS = [
-  { name: "Get Started", href: "/almuerzos/docs" },
-  {
-    name: "Components",
-    href: "/almuerzos/docs/components",
-  },
-  {
-    name: "Registry",
-    href: "/almuerzos/docs/registry",
-  },
-  {
-    name: "MCP Server",
-    href: "/almuerzos/docs/mcp",
-  },
-  {
-    name: "Forms",
-    href: "/almuerzos/docs/forms",
-  },
-  {
-    name: "Changelog",
-    href: "/almuerzos/docs/changelog",
-  },
+// Valores por defecto (pueden venir como props)
+const DEFAULT_TOP_LEVEL_SECTIONS = [
+  { name: "Empezar", href: "/docs" },
+  { name: "Bibliotecas", href: "/docs/libraries" },
 ]
-const EXCLUDED_SECTIONS = ["installation", "dark-mode"]
-const EXCLUDED_PAGES = ["/almuerzos/docs", "/almuerzos/docs/changelog"]
+
+const DEFAULT_EXCLUDED_SECTIONS = ["installation", "dark-mode"]
+const DEFAULT_EXCLUDED_PAGES = ["/docs", "/docs/libraries"]
+
+type DocsSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  tree: typeof source.pageTree
+  TOP_LEVEL_SECTIONS?: { name: string; href: string }[]
+  EXCLUDED_SECTIONS?: string[]
+  EXCLUDED_PAGES?: string[]
+}
 
 export function DocsSidebar({
   tree,
+  TOP_LEVEL_SECTIONS = DEFAULT_TOP_LEVEL_SECTIONS,
+  EXCLUDED_SECTIONS = DEFAULT_EXCLUDED_SECTIONS,
+  EXCLUDED_PAGES = DEFAULT_EXCLUDED_PAGES,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { tree: typeof source.pageTree }) {
+}: DocsSidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -59,22 +52,18 @@ export function DocsSidebar({
         <div className="h-(--top-spacing) shrink-0" />
         <SidebarGroup>
           <SidebarGroupLabel className="text-muted-foreground font-medium">
-            Sections
+            Secciones
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {TOP_LEVEL_SECTIONS.map(({ name, href }) => {
-                if (!showMcpDocs && href.includes("/mcp")) {
-                  return null
-                }
+                if (!showMcpDocs && href.includes("/mcp")) return null
+
                 return (
                   <SidebarMenuItem key={name}>
                     <SidebarMenuButton
                       asChild
-                      isActive={
-                        href === "/docs"
-                          ? pathname === href
-                          : pathname.startsWith(href)
+                      isActive={pathname === href
                       }
                       className="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
                     >
@@ -89,10 +78,9 @@ export function DocsSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
         {tree.children.map((item) => {
-          if (EXCLUDED_SECTIONS.includes(item.$id ?? "")) {
-            return null
-          }
+          if (EXCLUDED_SECTIONS.includes(item.$id ?? "")) return null
 
           return (
             <SidebarGroup key={item.$id}>
@@ -107,9 +95,8 @@ export function DocsSidebar({
                         !showMcpDocs &&
                         item.type === "page" &&
                         item.url?.includes("/mcp")
-                      ) {
+                      )
                         return null
-                      }
 
                       return (
                         item.type === "page" &&
