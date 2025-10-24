@@ -32,6 +32,15 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/registry/new-york-v4/ui/tabs"
+import { 
+  Card, 
+  CardAction, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/registry/new-york-v4/ui/card"
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -331,6 +340,16 @@ export const mdxComponents = {
   ),
   Button,
   Callout,
+
+  // Shadcn Card
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+
   Accordion,
   AccordionContent,
   AccordionItem,

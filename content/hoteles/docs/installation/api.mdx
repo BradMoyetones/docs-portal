@@ -1,0 +1,192 @@
+---
+title: Instalación de la API
+description: Esta guía te llevará a través del proceso de instalación y configuración del backend del sistema Hoteles, construido con PHP, Slim Framework y Eloquent ORM.
+---
+
+## Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado:
+
+- PHP 8.0 o superior
+- Composer
+- Apache o Nginx
+- MySQL 5.7+ o MariaDB 10.3+
+- Git
+
+## Clonar el Repositorio
+
+<Step>Clonar el proyecto desde GitHub</Step>
+
+Primero, clona el repositorio de la API en tu máquina local:
+
+```bash
+git clone https://github.com/BradParqueJaimeDuque/hoteles-backend.git
+cd hoteles-backend
+```
+
+## Instalar Dependencias
+
+<Step>Instalar las dependencias de PHP con Composer</Step>
+
+Una vez dentro del directorio del proyecto, ejecuta Composer para instalar todas las dependencias necesarias:
+
+```bash
+composer install
+```
+
+Este comando instalará:
+- Slim Framework
+- Eloquent ORM (standalone)
+- Blade Template Engine
+- Firebase JWT
+- Otras dependencias necesarias
+
+## Configurar Variables de Entorno
+
+<Step>Crear y configurar el archivo .env</Step>
+
+Crea un archivo `.env` en la raíz del proyecto y configura las siguientes variables de entorno:
+
+```bash
+# URL base de la API
+# Para desarrollo local
+BASE_URL=http://localhost
+# Para producción
+# BASE_URL=https://api.hoteles.portaljaimeduque.net
+
+# Configuración de la base de datos
+DB_HOST=localhost
+DB_NAME=hoteles
+DB_USER=root
+DB_PASS=
+
+# Configuración del servidor SMTP para envío de correos
+SMTP_HOST="mail.portaljaimeduque.net"
+SMTP_USERNAME="no-reply@portaljaimeduque.net"
+SMTP_PASSWORD=""
+SMTP_PORT="465"
+FROM_EMAIL="no-reply@portaljaimeduque.net"
+FROM_NAME="No Responder"
+
+# Clave secreta para JWT (genera una clave segura)
+JWT_SECRET=tu_clave_secreta_muy_segura_aqui
+```
+
+<Callout type="warning">
+  **Importante:** Asegúrate de generar una clave JWT segura y única para tu instalación. Puedes usar herramientas en línea o ejecutar `openssl rand -base64 32` en tu terminal.
+</Callout>
+
+## Configurar la Base de Datos
+
+<Step>Obtener e importar el backup de la base de datos</Step>
+
+//  Removed migrate.php and schema.sql instructions, added manual backup import process
+
+El proyecto no incluye archivos de migración automática. Para configurar la base de datos, debes obtener el último backup del administrador del sistema:
+
+1. **Solicita el último backup** al administrador (se generan backups semanales)
+2. **Crea la base de datos** en tu MySQL local:
+
+```sql
+CREATE DATABASE hoteles CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+3. **Importa el archivo .sql** manualmente usando phpMyAdmin:
+   - Abre phpMyAdmin en tu navegador (generalmente `http://localhost/phpmyadmin`)
+   - Selecciona la base de datos `hoteles`
+   - Ve a la pestaña "Importar"
+   - Selecciona el archivo `.sql` del backup
+   - Haz clic en "Continuar" para importar
+
+<Callout type="info">
+  **Nota:** Trabajarás de manera local sin afectar la base de datos en la nube. Los cambios que hagas localmente no se reflejarán en producción hasta que se desplieguen.
+</Callout>
+
+## Configurar Apache con XAMPP
+
+<Step>Instalar y configurar XAMPP o Servidor web Apache</Step>
+
+El proyecto Slim utiliza el archivo `.htaccess` para el enrutamiento. Asegúrate de que Apache esté configurado correctamente:
+
+### Habilitar mod_rewrite
+
+<Callout type="info">
+  **Nota:** Si estas utilizando XAMPP este modulo ya viene activado en el archivo `httpd.conf` por ende puedes omitir este paso.
+</Callout>
+
+```bash
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+```
+
+Para desarrollo local, se recomienda usar **XAMPP**, que incluye Apache y MySQL ya configurados:
+
+1. **Descarga e instala XAMPP** desde [https://www.apachefriends.org](https://www.apachefriends.org)
+
+2. **Configura el DocumentRoot** en el archivo `httpd.conf`:
+   - Abre el archivo de configuración de Apache (en XAMPP: `C:\xampp\apache\conf\httpd.conf` en Windows o `/Applications/XAMPP/xamppfiles/etc/httpd.conf` en Mac)
+   - Busca la línea que dice `DocumentRoot` y cámbiala para que apunte a la carpeta `public` de tu proyecto:
+
+```apache
+DocumentRoot "/ruta/a/hoteles-backend/public"
+<Directory "/ruta/a/hoteles-backend/public">
+    Options Indexes FollowSymLinks ExecCGI Includes
+    AllowOverride All
+    Require all granted
+</Directory>
+```
+
+<Callout type="warning">
+  **Nota Importante:** El `DocumentRoot` debe apuntar a la carpeta `public` del proyecto, no a la raíz. Slim Framework maneja todo el enrutamiento desde este directorio.
+</Callout>
+
+## Verificar la Instalación
+
+<Step>Probar que la API está funcionando</Step>
+
+Abre tu navegador y visita:
+
+```bash
+http://localhost
+```
+
+Deberías recibir una respuesta HTML indicando que la API está funcionando correctamente.
+
+## Solución de Problemas Comunes
+
+### Error 500 - Internal Server Error
+
+Si recibes un error 500, verifica:
+
+- Que el archivo `.htaccess` exista en la carpeta `public`
+- Que `mod_rewrite` esté habilitado en Apache
+- Que los permisos `777` de las carpetas del proyecto sean correctos
+- Revisa los logs de Apache: `/var/log/apache2/hoteles-backend-error.log`
+
+### Error de conexión a la base de datos
+
+Si no puedes conectarte a la base de datos:
+
+- Verifica que las credenciales en el archivo `.env` sean correctas
+- Asegúrate de que el servicio MySQL esté corriendo
+- Verifica que la base de datos `hoteles` exista o como la hayas nombrado
+
+### Error de JWT
+
+Si tienes problemas con la autenticación JWT:
+
+- Asegúrate de que `JWT_SECRET` esté configurado en el archivo `.env`
+- Verifica que la clave sea lo suficientemente segura (mínimo 32 caracteres)
+
+## Próximos Pasos
+
+Una vez que la API esté instalada y funcionando correctamente:
+
+- Revisa la <Link href="/hoteles/docs/api">documentación de la API</Link> para conocer todos los endpoints disponibles
+- Procede con la <Link href="/hoteles/docs/installation/front-end">instalación del Frontend</Link>
+- Configura los usuarios administradores iniciales
+- Revisa los logs en caso de errores
+
+<Callout type="success">
+  **¡Listo!** Tu API del sistema Hoteles está instalada y lista para recibir peticiones.
+</Callout>

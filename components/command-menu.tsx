@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { IconArrowRight } from "@tabler/icons-react"
-import { useDocsSearch } from "fumadocs-core/search/client"
+import { type FetchOptions, useDocsSearch } from "fumadocs-core/search/client"
 import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react"
 
 import { type Color, type ColorPalette } from "@/lib/colors"
@@ -42,12 +42,14 @@ export function CommandMenu({
   colors,
   blocks,
   navItems,
+  api,
   ...props
 }: DialogProps & {
   tree: typeof source.pageTree
   colors: ColorPalette[]
   blocks?: { name: string; description: string; categories: string[] }[]
-  navItems?: { href: string; label: string }[]
+  navItems?: { href: string; label: string }[];
+  api?: FetchOptions["api"]
 }) {
   const router = useRouter()
   const isMac = useIsMac()
@@ -60,6 +62,7 @@ export function CommandMenu({
 
   const { search, setSearch, query } = useDocsSearch({
     type: "fetch",
+    api
   })
   const packageManager = config.packageManager || "pnpm"
 
@@ -202,8 +205,8 @@ export function CommandMenu({
           onClick={() => setOpen(true)}
           {...props}
         >
-          <span className="hidden lg:inline-flex">Search documentation...</span>
-          <span className="inline-flex lg:hidden">Search...</span>
+          <span className="hidden lg:inline-flex">Buscar documentación...</span>
+          <span className="inline-flex lg:hidden">Buscar...</span>
           <div className="absolute top-1.5 right-1.5 hidden gap-1 sm:flex">
             <KbdGroup>
               <Kbd className="border">{isMac ? "⌘" : "Ctrl"}</Kbd>
@@ -232,7 +235,7 @@ export function CommandMenu({
           }}
         >
           <div className="relative">
-            <CommandInput placeholder="Search documentation..." />
+            <CommandInput placeholder="Buscar documentación..." />
             {query.isLoading && (
               <div className="pointer-events-none absolute top-1/2 right-3 z-10 flex -translate-y-1/2 items-center justify-center">
                 <Spinner className="text-muted-foreground size-4" />
@@ -241,11 +244,11 @@ export function CommandMenu({
           </div>
           <CommandList className="no-scrollbar min-h-80 scroll-pt-2 scroll-pb-1.5">
             <CommandEmpty className="text-muted-foreground py-12 text-center text-sm">
-              {query.isLoading ? "Searching..." : "No results found."}
+              {query.isLoading ? "Buscando..." : "No results found."}
             </CommandEmpty>
             {navItems && navItems.length > 0 && (
               <CommandGroup
-                heading="Pages"
+                heading="Páginas"
                 className="!p-0 [&_[cmdk-group-heading]]:scroll-mt-16 [&_[cmdk-group-heading]]:!p-3 [&_[cmdk-group-heading]]:!pb-1"
               >
                 {navItems.map((item) => (
@@ -396,7 +399,7 @@ export function CommandMenu({
               <CornerDownLeftIcon />
             </CommandMenuKbd>{" "}
             {selectedType === "page" || selectedType === "component"
-              ? "Go to Page"
+              ? "Ir a Página"
               : null}
             {selectedType === "color" ? "Copy OKLCH" : null}
           </div>

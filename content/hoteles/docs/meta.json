@@ -4,6 +4,7 @@
     "(root)",
     "api",
     "front-end",
-    "roles"
+    "roles",
+    "installation"
   ]
 }

@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/registry/new-york-v4/ui/sonner"
 
 import "@/styles/globals.css"
+import NextAuthSessionProvider from "./provider"
 
 export const metadata: Metadata = {
   title: {
@@ -95,14 +96,16 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider>
-          <LayoutProvider>
-            <ActiveThemeProvider>
-              {children}
-              <TailwindIndicator />
-              <Toaster position="top-center" />
-              <Analytics />
-            </ActiveThemeProvider>
-          </LayoutProvider>
+          <NextAuthSessionProvider>
+            <LayoutProvider>
+              <ActiveThemeProvider>
+                {children}
+                <TailwindIndicator />
+                <Toaster position="top-center" />
+                <Analytics />
+              </ActiveThemeProvider>
+            </LayoutProvider>
+          </NextAuthSessionProvider>
         </ThemeProvider>
       </body>
     </html>

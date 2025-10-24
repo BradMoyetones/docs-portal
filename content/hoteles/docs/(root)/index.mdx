@@ -13,7 +13,7 @@ El sistema facilita el registro de huéspedes por parte de los hoteles y permite
 
 Antes de la implementación de este sistema, el proceso de gestión de cortesías presentaba múltiples inconvenientes:
 
-<Callout className="mt-6 mb-6 border-yellow-600 bg-blue-50 dark:border-yellow-900 dark:bg-yellow-950 [&_code]:bg-yellow-100 dark:[&_code]:bg-yellow-900">
+<Callout className="mt-6 mb-6 border-yellow-600 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950 [&_code]:bg-yellow-100 dark:[&_code]:bg-yellow-900">
 **Proceso Manual Ineficiente**
 
 - Los hoteles enviaban la información de huéspedes por correo electrónico o WhatsApp
@@ -60,47 +60,71 @@ El frontend fue construido con las tecnologías más modernas de React:
 ## Características Principales
 
 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Gestión de Hoteles</h3>
-    <p className="text-sm text-muted-foreground">
-      Administración completa de hoteles aliados, activación/desactivación de convenios y configuración de cortesías.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Registro de Huéspedes</h3>
-    <p className="text-sm text-muted-foreground">
-      Interfaz intuitiva para que los hoteles registren a sus huéspedes que visitarán el parque.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Verificación en Taquilla</h3>
-    <p className="text-sm text-muted-foreground">
-      Búsqueda rápida por documento para verificar cortesías al momento de la compra.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Autenticación Segura</h3>
-    <p className="text-sm text-muted-foreground">
-      Sistema de roles y permisos con JWT para garantizar la seguridad de la información.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Reportes y Estadísticas</h3>
-    <p className="text-sm text-muted-foreground">
-      Generación de reportes detallados por hotel, fecha y tipo de cortesía aplicada.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Auditoría Completa</h3>
-    <p className="text-sm text-muted-foreground">
-      Registro de todas las acciones realizadas en el sistema para trazabilidad total.
-    </p>
-  </div>
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Gestión de Hoteles
+      </CardTitle>
+      <CardDescription>
+        Administración completa de hoteles aliados, activación/desactivación de convenios y configuración de cortesías.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Registro de Huéspedes
+      </CardTitle>
+      <CardDescription>
+        Interfaz intuitiva para que los hoteles registren a sus huéspedes que visitarán el parque.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Verificación en Taquilla
+      </CardTitle>
+      <CardDescription>
+        Búsqueda rápida por documento para verificar cortesías al momento de la compra.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Autenticación Segura
+      </CardTitle>
+      <CardDescription>
+        Sistema de roles y permisos con JWT para garantizar la seguridad de la información.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Reportes y Estadísticas
+      </CardTitle>
+      <CardDescription>
+        Generación de reportes detallados por hotel, fecha y tipo de cortesía aplicada.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Auditoría Completa
+      </CardTitle>
+      <CardDescription>
+        Registro de todas las acciones realizadas en el sistema para trazabilidad total.
+      </CardDescription>
+    </CardContent>
+  </Card>
 </div>
 
 ## Beneficios
@@ -117,11 +141,11 @@ El frontend fue construido con las tecnologías más modernas de React:
 
 <Step>Explorar la API</Step>
 
-Conoce todos los endpoints disponibles en la [documentación de la API](/hoteles/api).
+Conoce todos los endpoints disponibles en la <Link href="/hoteles/docs/api">documentación de la API</Link>.
 
 <Step>Revisar el Frontend</Step>
 
-Descubre la arquitectura y componentes del frontend en la [documentación del Frontend](/hoteles/front-end).
+Descubre la arquitectura y componentes del frontend en la <Link href="/hoteles/docs/front-end">documentación del Frontend</Link>.
 
 <Step>Guías de Usuario</Step>
 

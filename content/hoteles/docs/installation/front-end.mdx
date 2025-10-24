@@ -1,0 +1,241 @@
+---
+title: Instalación del Frontend
+description: Esta guía te llevará a través del proceso de instalación y configuración del frontend del sistema Hoteles, construido con React, Vite, TypeScript y shadcn/ui.
+---
+
+## Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado:
+
+- Node.js 18.0 o superior
+- npm o yarn
+- Git
+- La API del sistema Hoteles debe estar instalada y funcionando
+
+<Callout type="warning">
+  **Importante:** El frontend requiere que la API esté funcionando correctamente. Asegúrate de completar primero la <Link href="/hoteles/docs/installation/api">instalación de la API</Link>.
+</Callout>
+
+## Clonar el Repositorio
+
+<Step>Clonar el proyecto desde GitHub</Step>
+
+Primero, clona el repositorio del frontend en tu máquina local:
+
+```bash
+git clone https://github.com/tu-organizacion/hoteles-frontend.git
+cd hoteles-frontend
+```
+
+## Instalar Dependencias
+
+<Step>Instalar las dependencias de Node.js con npm</Step>
+
+Una vez dentro del directorio del proyecto, ejecuta npm para instalar todas las dependencias necesarias:
+
+```bash
+npm install
+```
+
+Este comando instalará:
+- React 18
+- Vite
+- TypeScript
+- shadcn/ui components
+- React Router
+- Axios o Fetch para peticiones HTTP
+- Otras dependencias necesarias
+
+<Callout>
+  Si prefieres usar **yarn**, puedes ejecutar `yarn install` en su lugar.
+</Callout>
+
+## Configurar Variables de Entorno
+
+<Step>Crear y configurar el archivo .env</Step>
+
+Crea un archivo `.env` en la raíz del proyecto y configura las siguientes variables de entorno:
+
+```bash
+# URL del backend en desarrollo
+# VITE_BACKEND_URL=http://localhost
+
+# URL del backend en producción
+VITE_BACKEND_URL=https://api.hoteles.portaljaimeduque.net
+
+# URL del frontend en desarrollo
+# VITE_FRONTEND_URL=http://localhost:5174
+
+# URL del frontend en producción
+VITE_FRONTEND_URL=https://hoteles.portaljaimeduque.net
+```
+
+<Callout type="info">
+  **Nota:** Las variables de entorno en Vite deben comenzar con el prefijo `VITE_` para estar disponibles en el código del cliente.
+</Callout>
+
+### Configuración para Desarrollo Local
+
+Si estás trabajando en desarrollo local, descomenta las líneas de desarrollo y comenta las de producción:
+
+```bash
+# URL del backend en desarrollo
+VITE_BACKEND_URL=http://localhost
+
+# URL del backend en producción
+# VITE_BACKEND_URL=https://api.hoteles.portaljaimeduque.net
+
+# URL del frontend en desarrollo
+VITE_FRONTEND_URL=http://localhost:5174
+
+# URL del frontend en producción
+# VITE_FRONTEND_URL=https://hoteles.portaljaimeduque.net
+```
+
+## Ejecutar el Servidor de Desarrollo
+
+<Step>Iniciar el servidor de desarrollo</Step>
+
+Para iniciar el servidor de desarrollo de Vite, ejecuta:
+
+```bash
+npm run dev
+```
+
+Esto iniciará el servidor de desarrollo en `http://localhost:5174` (o el puerto que Vite asigne automáticamente).
+
+Deberías ver un mensaje similar a:
+
+```bash
+  VITE v5.0.0  ready in 500 ms
+
+  ➜  Local:   http://localhost:5174/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+```
+
+Abre tu navegador y visita `http://localhost:5174` para ver la aplicación funcionando.
+
+## Compilar para Producción
+
+<Step>Generar la build de producción</Step>
+
+Cuando estés listo para desplegar a producción, ejecuta:
+
+```bash
+npm run build
+```
+
+Este comando:
+1. Compila el código TypeScript
+2. Optimiza los assets (CSS, JS, imágenes)
+3. Genera los archivos estáticos en la carpeta `dist/`
+
+### Vista Previa de la Build
+
+Para previsualizar la build de producción localmente:
+
+```bash
+npm run preview
+```
+
+## Desplegar a Producción (Servidor Compartido)
+
+<Step>Subir los archivos al servidor</Step>
+
+El servidor donde está alojado el frontend es un **servidor compartido** sin acceso a comandos. El proceso de despliegue es el siguiente:
+
+### 1. Compilar el proyecto localmente
+
+Primero, asegúrate de tener las variables de entorno de producción configuradas en tu archivo `.env`:
+
+```bash
+VITE_BACKEND_URL=https://api.hoteles.portaljaimeduque.net
+VITE_FRONTEND_URL=https://hoteles.portaljaimeduque.net
+```
+
+Luego, compila el proyecto:
+
+```bash
+npm run build
+```
+
+Esto generará todos los archivos estáticos optimizados en la carpeta `dist/`.
+
+### 2. Subir los archivos al servidor
+
+Usando un cliente FTP (como FileZilla, WinSCP, o el administrador de archivos de tu hosting):
+
+1. Conéctate al servidor con tus credenciales FTP
+2. Navega hasta la ruta base del dominio: `hoteles.portaljaimeduque.net`
+3. **Sube el contenido** de la carpeta `dist/` (no la carpeta en sí, sino su contenido)
+   - Deberías ver archivos como: `index.html`, carpetas `assets/`, etc.
+
+<Callout type="warning">
+  **Importante:** Sube el **contenido** de la carpeta `dist/`, no la carpeta `dist/` completa. Los archivos deben estar en la raíz del dominio.
+</Callout>
+
+### 3. Crear el archivo .htaccess
+
+En la raíz del dominio (donde subiste el `index.html`), crea un archivo llamado `.htaccess` con el siguiente contenido:
+
+```apache
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|htm|css|js)$">
+        Header set Cache-Control "max-age=0, no-store"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+    
+    # Asegurar el tipo MIME correcto para JavaScript y CSS
+    <FilesMatch "\.(js|mjs)$">
+        Header set Content-Type "application/javascript; charset=UTF-8"
+    </FilesMatch>
+    <FilesMatch "\.(css)$">
+        Header set Content-Type "text/css; charset=UTF-8"
+    </FilesMatch>
+</IfModule>
+```
+
+<Callout type="info">
+  **¿Qué hace este .htaccess?** Configura las reglas de reescritura para que React Router funcione correctamente, redirigiendo todas las rutas a `index.html`. También configura los headers de caché y tipos MIME para los archivos estáticos.
+</Callout>
+
+### 4. Verificar el despliegue
+
+Abre tu navegador y visita:
+
+```
+https://hoteles.portaljaimeduque.net
+```
+
+Deberías ver la página de inicio de sesión del sistema Hoteles. Intenta iniciar sesión para verificar que la conexión con la API funciona correctamente.
+
+## Solución de Problemas Comunes
+
+### Archivos no se suben correctamente
+
+Si tienes problemas al subir archivos al servidor:
+
+- Verifica que estés subiendo el **contenido** de la carpeta `dist/`, no la carpeta en sí
+- Asegúrate de que el archivo `.htaccess` se haya subido correctamente (algunos clientes FTP ocultan archivos que comienzan con punto)
+- Verifica que tengas permisos de escritura en el directorio del servidor
+- Si el cliente FTP no muestra el `.htaccess`, habilita la opción "Mostrar archivos ocultos"
+
+### El .htaccess no funciona
+
+Si las rutas de React Router no funcionan (error 404 al recargar):
+
+- Verifica que el módulo `mod_rewrite` esté habilitado en el servidor (contacta a tu proveedor de hosting si no estás seguro)
+- Asegúrate de que el archivo `.htaccess` esté en la raíz del dominio, junto con `index.html`
+- Verifica que el archivo `.htaccess` tenga el contenido correcto (copia y pega exactamente como se muestra arriba)
+- Algunos servidores requieren permisos específicos para el `.htaccess` (generalmente 644)

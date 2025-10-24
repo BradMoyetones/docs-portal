@@ -1,0 +1,64 @@
+---
+title: Siguientes pasos
+description: Perfecto, basándome en tu estructura actual y las mejores prácticas de documentación de frontend, te recomendaría crear estos MDX dentro de `front-end/`
+---
+
+## Arquitectura y Configuración
+
+- **`routes.mdx`** - Documentar el sistema de rutas de React Router, rutas protegidas, y estructura de navegación
+- **`project-structure.mdx`** - Explicar en detalle la organización de carpetas y convenciones de nombres
+- **`environment-variables.mdx`** - Variables de entorno disponibles y su uso
+
+
+## TypeScript y Tipos
+
+- **`types.mdx`** - Todos los tipos e interfaces principales (User, Hotel, Guest, CourtesyRecord, etc.)
+- **`api-types.mdx`** - Tipos específicos para respuestas de API y DTOs
+
+
+## Estado y Contextos
+
+- **`auth-context.mdx`** - Context de autenticación, hooks relacionados (useAuth), y flujo de login/logout
+- **`state-management.mdx`** - Cómo se maneja el estado global, TanStack Query, y patrones de caché
+
+
+## Componentes
+
+- **`components/index.mdx`** - Índice general de componentes con categorías
+- **`components/forms.mdx`** - Componentes de formularios (HotelForm, GuestForm, etc.)
+- **`components/tables.mdx`** - Tablas de datos con paginación y filtros
+- **`components/courtesy-record.mdx`** - Componente específico para mostrar/gestionar cortesías
+- **`components/hotel-card.mdx`** - Tarjeta de hotel con ejemplos de uso
+- **`components/layout.mdx`** - Componentes de layout (Navbar, Sidebar, Footer)
+
+
+## Hooks Personalizados
+
+- **`hooks.mdx`** - Documentar todos los custom hooks (useAuth, useHotels, useGuests, useDebounce, etc.)
+
+
+## Servicios y API
+
+- **`services.mdx`** - Cómo funcionan los servicios de API, interceptores de Axios, manejo de errores
+- **`api-integration.mdx`** - Patrones para consumir la API, ejemplos de peticiones
+
+
+## Guías Prácticas
+
+- **`guides/adding-new-page.mdx`** - Cómo agregar una nueva página/módulo
+- **`guides/creating-forms.mdx`** - Guía para crear formularios con validación
+- **`guides/styling.mdx`** - Convenciones de estilos con Tailwind y shadcn/ui
+- **`guides/testing.mdx`** - Si tienen tests, cómo escribirlos
+
+
+## Utilidades
+
+- **`utils.mdx`** - Funciones utilitarias (formatters, validators, helpers)
+
+
+**Prioridad recomendada:**
+
+1. `types.mdx`, `routes.mdx`, `auth-context.mdx` (fundamentales)
+2. `components/index.mdx`, `hooks.mdx`, `services.mdx` (core)
+3. Los componentes específicos más usados
+4. Las guías prácticas (para nuevos desarrolladores)

@@ -15,7 +15,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/registry/new-york-v4/ui/sidebar"
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/registry/new-york-v4/ui/collapsible"
+import { ChevronRight } from "lucide-react"
 
 // Valores por defecto (pueden venir como props)
 const DEFAULT_TOP_LEVEL_SECTIONS = [
@@ -63,8 +73,7 @@ export function DocsSidebar({
                   <SidebarMenuItem key={name}>
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname === href
-                      }
+                      isActive={pathname === href}
                       className="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
                     >
                       <Link href={href}>
@@ -91,6 +100,75 @@ export function DocsSidebar({
                 {item.type === "folder" && (
                   <SidebarMenu className="gap-0.5">
                     {item.children.map((item) => {
+
+                      if(item.type === "folder"){
+                        return (
+                          <Collapsible
+                            key={item.$id}
+                            asChild
+                            defaultOpen={true}
+                            className="group/collapsible"
+                          >
+                            <SidebarMenuItem>
+                              {item.children.length === 0 ? (
+                                <SidebarMenuButton asChild>
+                                  {item.index?.url ? (
+                                    <Link href={item.index.url}>
+                                      <span>{item.name}</span>
+                                    </Link>
+                                  ): (
+                                    <div>
+                                      <span>{item.name}</span>
+                                    </div>
+                                  )}
+                                </SidebarMenuButton>
+                              ): (
+                                <CollapsibleTrigger asChild>
+                                  <SidebarMenuButton asChild>
+                                    {item.index?.url ? (
+                                      <Link href={item.index.url}>
+                                        <span>{item.name}</span>
+                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                      </Link>
+                                    ): (
+                                      <div>
+                                        <span>{item.name}</span>
+                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                      </div>
+                                    )}
+                                  </SidebarMenuButton>
+                                </CollapsibleTrigger>
+                              )}
+                              <CollapsibleContent>
+                                <SidebarMenuSub>
+                                  {item.children.map((item) => {
+                                    if (
+                                      !showMcpDocs &&
+                                      item.type === "page" &&
+                                      item.url?.includes("/mcp")
+                                    )
+                                    return null
+                                    
+                                    return (
+                                      item.type === "page" &&
+                                      !EXCLUDED_PAGES.includes(item.url) && (
+                                        <SidebarMenuSubItem key={item.$id}>
+                                          <SidebarMenuSubButton asChild>
+                                            <Link href={item.url}>
+                                              <span>{item.name}</span>
+                                            </Link>
+                                          </SidebarMenuSubButton>
+                                        </SidebarMenuSubItem>
+                                      )
+                                    )
+                                  })}
+                                </SidebarMenuSub>
+                              </CollapsibleContent>
+                            </SidebarMenuItem>
+                          </Collapsible>
+                        )
+                      }
+                      
                       if (
                         !showMcpDocs &&
                         item.type === "page" &&

@@ -12,10 +12,13 @@ import { SiteConfig } from "@/components/site-config"
 // import blocks from "@/registry/__blocks__.json"
 import { Button } from "@/registry/new-york-v4/ui/button"
 import { Separator } from "@/registry/new-york-v4/ui/separator"
+import { FetchOptions } from "fumadocs-core/search/client"
+import UserInfo from "./user-info"
 
 export function SiteHeader({
-  tree
-}: {tree: typeof source.pageTree}) {
+  tree,
+  api
+}: {tree: typeof source.pageTree, api?: FetchOptions["api"]}) {
   const colors = getColors()
   const pageTree = tree
   return (
@@ -43,8 +46,9 @@ export function SiteHeader({
             <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
               <CommandMenu
                 tree={pageTree}
-                colors={colors}
+                colors={[]}
                 navItems={siteConfig.navItems}
+                api={api}
               />
             </div>
             {/* <Separator
@@ -56,6 +60,8 @@ export function SiteHeader({
             <SiteConfig className="3xl:flex hidden" />
             <Separator orientation="vertical" />
             <ModeSwitcher />
+            <Separator orientation="vertical" />
+            <UserInfo />
           </div>
         </div>
       </div>

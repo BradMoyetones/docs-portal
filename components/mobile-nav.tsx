@@ -14,6 +14,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/registry/new-york-v4/ui/popover"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/registry/new-york-v4/ui/collapsible"
+import { SidebarMenuButton, sidebarMenuButtonVariants, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from "@/registry/new-york-v4/ui/sidebar"
+import { ChevronRight } from "lucide-react"
 
 const TOP_LEVEL_SECTIONS = [
   { name: "Empezar", href: "/docs" },
@@ -116,6 +123,77 @@ export function MobileNav({
                     </div>
                     <div className="flex flex-col gap-3">
                       {group.children.map((item) => {
+
+                        if(item.type === "folder"){
+                          return (
+                            <Collapsible
+                              key={item.$id}
+                              asChild
+                              defaultOpen={true}
+                              className="group/collapsible"
+                            >
+                              <div className={cn("group/menu-item relative")}>
+                                {item.children.length === 0 ? (
+                                  item.index?.url ? (
+                                    <Link href={item.index.url} className={cn(sidebarMenuButtonVariants({ variant: "default", size: "default" }), "text-2xl font-medium")}>
+                                      <span>{item.name}</span>
+                                    </Link>
+                                  ): (
+                                    <button className={cn(sidebarMenuButtonVariants({ variant: "default", size: "default" }), "text-2xl font-medium")}>
+                                      <span>{item.name}</span>
+                                    </button>
+                                  )
+                                ): (
+                                  <CollapsibleTrigger asChild onClick={() => setOpen(!open)}>
+                                    {item.index?.url ? (
+                                      <Link href={item.index.url} className={"text-2xl font-medium flex items-center"}>
+                                        <span>{item.name}</span>
+                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                      </Link>
+                                    ): (
+                                      <button className={"text-2xl font-medium flex items-center"}>
+                                        <span>{item.name}</span>
+                                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                      </button>
+                                    )}
+                                  </CollapsibleTrigger>
+                                )}
+                                <CollapsibleContent>
+                                  <ul 
+                                    className={cn(
+                                      "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
+                                      "group-data-[collapsible=icon]:hidden"
+                                    )}
+                                  >
+                                    {item.children.map((item) => {
+                                      if (
+                                        !showMcpDocs &&
+                                        item.type === "page" &&
+                                        item.url?.includes("/mcp")
+                                      )
+                                      return null
+                                      
+                                      return (
+                                        item.type === "page" && (
+                                          <li className={cn("group/menu-sub-item relative")} key={item.$id} onClick={() => setOpen(!open)}>
+                                            <button 
+                                              className="px-2 py-1"
+                                            >
+                                              <Link href={item.url}>
+                                                <span>{item.name}</span>
+                                              </Link>
+                                            </button>
+                                          </li>
+                                        )
+                                      )
+                                    })}
+                                  </ul>
+                                </CollapsibleContent>
+                              </div>
+                            </Collapsible>
+                          )
+                        }
+
                         if (item.type === "page") {
                           if (!showMcpDocs && item.url.includes("/mcp")) {
                             return null
