@@ -1,77 +1,98 @@
 ---
-title: Introduction
-description: shadcn/ui is a set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks and AI models. Open Source. Open Code.
+title: Almuerzos
+description: Este sistema es una herramienta esencial para la gestión diaria y eficiente del registro de almuerzos del personal, optimizando la planificación gastronómica al cuantificar los menús requeridos y agilizando la distribución de las tres opciones disponibles.
 ---
 
-**This is not a component library. It is how you build your component library.**
+## Descripción del Proyecto
 
-You know how most traditional component libraries work: you install a package from NPM, import the components, and use them in your app.
+El proyecto **Almuerzos** es una aplicación web integral diseñada para transformar la gestión del registro diario de comidas para todo el personal. Su objetivo principal es optimizar la planificación gastronómica, permitiendo un control preciso sobre la cantidad de almuerzos a servir y la distribución de los tres tipos de menú disponibles. Al centralizar y automatizar este proceso, el sistema no solo agiliza las operaciones diarias sino que también garantiza una asignación eficiente de recursos y una experiencia mejorada para los usuarios.
 
-This approach works well until you need to customize a component to fit your design system or require one that isn’t included in the library. **Often, you end up wrapping library components, writing workarounds to override styles, or mixing components from different libraries with incompatible APIs.**
+## Problemática Anterior
 
-This is what shadcn/ui aims to solve. It is built around the following principles:
+Previamente, la gestión de los registros de almuerzos se realizaba de forma rudimentaria, principalmente a través de comunicaciones por WhatsApp. Este método manual presentaba serias deficiencias, generando una serie de inconvenientes operativos. La verificación de registros era propensa a inconsistencias, lo que resultaba en conteos inexactos y demoras significativas en el proceso de consolidación. Esta falta de un sistema estructurado dificultaba la trazabilidad y la auditoría, impactando negativamente la eficiencia y la fiabilidad de la gestión de almuerzos.
 
-- **Open Code:** The top layer of your component code is open for modification.
-- **Composition:** Every component uses a common, composable interface, making them predictable.
-- **Distribution:** A flat-file schema and command-line tool make it easy to distribute components.
-- **Beautiful Defaults:** Carefully chosen default styles, so you get great design out-of-the-box.
-- **AI-Ready:** Open code for LLMs to read, understand, and improve.
+<Callout className="mt-6 mb-6 border-yellow-600 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950 [&_code]:bg-yellow-100 dark:[&_code]:bg-yellow-900">
+  La dependencia de métodos manuales como WhatsApp resultaba en **inconsistencias en los conteos**, **demoras significativas en la verificación** de registros y una **falta de trazabilidad** clara, impactando negativamente la eficiencia operativa y la satisfacción del personal.
+</Callout>
 
-## Open Code
+## Solución Implementada
 
-shadcn/ui hands you the actual component code. You have full control to customize and extend the components to your needs. This means:
+Para abordar estas problemáticas, se desarrolló una aplicación robusta que automatiza y centraliza el control de almuerzos. Esta solución permite contabilizar cada registro de manera detallada, categorizando por restaurante, tipo de menú y persona. Además, se integra de forma transparente con otra aplicación, **Ecotrueque**, para realizar descuentos automáticos de gramos de peso, eliminando por completo la necesidad de un control manual de estos procesos. El resultado es un sistema eficiente, preciso y libre de las inconsistencias asociadas a los métodos tradicionales.
 
-- **Full Transparency:** You see exactly how each component is built.
-- **Easy Customization:** Modify any part of a component to fit your design and functionality requirements.
-- **AI Integration:** Access to the code makes it straightforward for LLMs to read, understand, and even improve your components.
+## Stack Tecnológico
 
-_In a typical library, if you need to change a button’s behavior, you have to override styles or wrap the component. With shadcn/ui, you simply edit the button code directly._
+### Backend
+*   **PHP**
+*   **Slim Framework**
+*   **Eloquent ORM**
+*   **Blade**
+*   **JWT**
 
-<Accordion collapsible>
-  <AccordionItem value="faq-1" className="border-none">
-    <AccordionTrigger>
-      How do I pull upstream updates in an Open Code approach?
-    </AccordionTrigger>
-    <AccordionContent>
-      <p>
-        shadcn/ui follows a headless component architecture. This means the core
-        of your app can receive fixes by updating your dependencies, for
-        instance, radix-ui or input-otp.
-      </p>
-      <p className="mt-4">
-        The topmost layer, i.e., the one closest to your design system, is not
-        coupled with the implementation of the library. It stays open for
-        modification.
-      </p>
-    </AccordionContent>
-  </AccordionItem>
-</Accordion>
+### Frontend
+*   **React 18**
+*   **Vite**
+*   **TypeScript**
+*   **shadcn/ui**
+*   **Tailwind CSS**
 
-## Composition
+## Características Principales
 
-Every component in shadcn/ui shares a common, composable interface. **If a component does not exist, we bring it in, make it composable, and adjust its style to match and work with the rest of the design system.**
+<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Registro Centralizado de Almuerzos</h3>
+    <p className="text-sm text-muted-foreground">
+      Plataforma intuitiva para que cada integrante del personal registre su opción de almuerzo diario de manera rápida y sencilla.
+    </p>
+  </div>
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Gestión Gastronómica Inteligente</h3>
+    <p className="text-sm text-muted-foreground">
+      Herramientas para que el equipo de cocina anticipe la demanda, planifique la preparación de los 3 tipos de menú y optimice recursos.
+    </p>
+  </div>
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Integración con Ecotrueque</h3>
+    <p className="text-sm text-muted-foreground">
+      Sincronización automática con la aplicación Ecotrueque para el descuento preciso de gramos de peso, eliminando procesos manuales.
+    </p>
+  </div>
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Reportes Detallados y Análisis</h3>
+    <p className="text-sm text-muted-foreground">
+      Generación de informes exhaustivos por restaurante, tipo de menú y usuario para una visión clara y toma de decisiones informada.
+    </p>
+  </div>
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Eliminación de Procesos Manuales</h3>
+    <p className="text-sm text-muted-foreground">
+      Automatización completa del registro y conteo, reduciendo la carga administrativa y minimizando errores humanos.
+    </p>
+  </div>
+  <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+    <h3 className="text-lg font-semibold mb-2">Interfaz de Usuario Intuitiva</h3>
+    <p className="text-sm text-muted-foreground">
+      Diseño moderno y responsivo que asegura una experiencia de usuario fluida y accesible desde cualquier dispositivo.
+    </p>
+  </div>
+</div>
 
-_A shared, composable interface means it's predictable for both your team and LLMs. You are not learning different APIs for every new component. Even for third-party ones._
+## Beneficios
 
-## Distribution
+*   **Precisión y Eficiencia en el Conteo:** Elimina errores manuales y agiliza el proceso de contabilización de almuerzos.
+*   **Optimización de la Gestión Gastronómica:** Permite una mejor planificación de recursos, reduce el desperdicio y asegura la disponibilidad de menús.
+*   **Ahorro de Tiempo Operacional:** Reduce significativamente el tiempo dedicado a la gestión y verificación de registros diarios.
+*   **Trazabilidad y Transparencia:** Proporciona acceso a datos claros y verificables sobre los registros de almuerzos, mejorando la auditoría.
+*   **Mejora de la Experiencia del Usuario:** Ofrece un sistema fácil de usar para el registro diario, aumentando la satisfacción del personal.
 
-shadcn/ui is also a code distribution system. It defines a schema for components and a CLI to distribute them.
+## Próximos Pasos
 
-- **Schema:** A flat-file structure that defines the components, their dependencies, and properties.
-- **CLI:** A command-line tool to distribute and install components across projects with cross-framework support.
+<Steps>
+  <Step>Explorar la API</Step>
+  Conoce todos los endpoints disponibles en la <Link href="/almuerzos/docs/api">documentación de la API</Link>.
 
-_You can use the schema to distribute your components to other projects or have AI generate completely new components based on existing schema._
+  <Step>Revisar el Frontend</Step>
+  Descubre la arquitectura y componentes del frontend en la <Link href="/almuerzos/docs/front-end">documentación del Frontend</Link>.
 
-## Beautiful Defaults
-
-shadcn/ui comes with a large collection of components that have carefully chosen default styles. They are designed to look good on their own and to work well together as a consistent system:
-
-- **Good Out-of-the-Box:** Your UI has a clean and minimal look without extra work.
-- **Unified Design:** Components naturally fit with one another. Each component is built to match the others, keeping your UI consistent.
-- **Easily Customizable:** If you want to change something, it's simple to override and extend the defaults.
-
-## AI-Ready
-
-The design of shadcn/ui makes it easy for AI tools to work with your code. Its open code and consistent API allow AI models to read, understand, and even generate new components.
-
-_An AI model can learn how your components work and suggest improvements or even create new components that integrate with your existing design._
+  <Step>Guías de Usuario</Step>
+  Consulta las guías específicas para cada rol de usuario en el sistema.
+</Steps>

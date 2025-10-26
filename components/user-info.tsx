@@ -5,9 +5,19 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { LogOut } from "lucide-react"
+import { Spinner } from "./ui/spinner"
 
 export default function UserInfo() {
     const {data: session, status} = useSession()
+
+    if(status === "loading"){
+        return <Spinner className="ml-2" />
+    }
+
+    if(!session){
+        return null
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

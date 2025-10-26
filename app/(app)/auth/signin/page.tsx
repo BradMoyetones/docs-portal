@@ -2,11 +2,12 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useSearchParams, useRouter, redirect } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 export default function SignInPage() {
     const [password, setPassword] = useState("");
@@ -23,19 +24,24 @@ export default function SignInPage() {
         setLoading(true);
         setError("");
 
-        const result = await signIn("credentials", {
+        toast.promise(signIn("credentials", {
             password,
             redirect: false,
             callbackUrl
-        });
-
-        if (result?.error) {
-            setError("Contraseña incorrecta");
-            setLoading(false);
-        } else {
-            // Redirige a la página que intentó acceder
-            router.push(callbackUrl);
-        }
+        }), {
+            loading: "Validando credenciales...",
+            success: () => {
+                router.push(callbackUrl);
+                return `Autenticado exitosamente`
+            },
+            error: () => {
+                setError("Contraseña incorrecta");
+                return `Contraseña incorrecta`
+            },
+            finally: () => {
+                setLoading(false);
+            }
+        })
     };
 
     return (
