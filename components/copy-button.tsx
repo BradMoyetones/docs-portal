@@ -3,7 +3,6 @@
 import * as React from "react"
 import { CheckIcon, ClipboardIcon } from "lucide-react"
 
-import { Event, trackEvent } from "@/lib/events"
 import { cn } from "@/lib/utils"
 import { Button } from "@/registry/new-york-v4/ui/button"
 import {
@@ -12,11 +11,8 @@ import {
   TooltipTrigger,
 } from "@/registry/new-york-v4/ui/tooltip"
 
-export function copyToClipboardWithMeta(value: string, event?: Event) {
+export function copyToClipboardWithMeta(value: string, event?: any) {
   navigator.clipboard.writeText(value)
-  if (event) {
-    trackEvent(event)
-  }
 }
 
 export function CopyButton({
@@ -28,7 +24,7 @@ export function CopyButton({
 }: React.ComponentProps<typeof Button> & {
   value: string
   src?: string
-  event?: Event["name"]
+  event?: any
 }) {
   const [hasCopied, setHasCopied] = React.useState(false)
 
@@ -51,15 +47,7 @@ export function CopyButton({
           )}
           onClick={() => {
             copyToClipboardWithMeta(
-              value,
-              event
-                ? {
-                    name: event,
-                    properties: {
-                      code: value,
-                    },
-                  }
-                : undefined
+              value
             )
             setHasCopied(true)
           }}

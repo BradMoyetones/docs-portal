@@ -8,7 +8,6 @@ import { type FetchOptions, useDocsSearch } from "fumadocs-core/search/client"
 import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react"
 
 import { type Color, type ColorPalette } from "@/lib/colors"
-import { trackEvent } from "@/lib/events"
 import { showMcpDocs } from "@/lib/flags"
 import { source } from "@/lib/source"
 import { cn } from "@/lib/utils"
@@ -76,13 +75,6 @@ export function CommandMenu({
     // Only track if the query is different from the last tracked query and has content.
     if (trimmedQuery && trimmedQuery !== lastTrackedQueryRef.current) {
       lastTrackedQueryRef.current = trimmedQuery
-      trackEvent({
-        name: "search_query",
-        properties: {
-          query: trimmedQuery,
-          query_length: trimmedQuery.length,
-        },
-      })
     }
   }, [])
 

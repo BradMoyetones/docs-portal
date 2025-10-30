@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { getColors } from "@/lib/colors"
 import { siteConfig } from "@/lib/config"
 import { source } from "@/lib/source"
 import { CommandMenu } from "@/components/command-menu"
@@ -9,7 +8,6 @@ import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { ModeSwitcher } from "@/components/mode-switcher"
 import { SiteConfig } from "@/components/site-config"
-// import blocks from "@/registry/__blocks__.json"
 import { Button } from "@/registry/new-york-v4/ui/button"
 import { Separator } from "@/registry/new-york-v4/ui/separator"
 import { FetchOptions } from "fumadocs-core/search/client"
@@ -19,10 +17,9 @@ export function SiteHeader({
   tree,
   api
 }: {tree: typeof source.pageTree, api?: FetchOptions["api"]}) {
-  const colors = getColors()
   const pageTree = tree
   return (
-    <header className="bg-background sticky top-0 z-50 w-full">
+    <header className="bg-background/10 backdrop-blur-2xl sticky top-0 z-50 w-full">
       <div className="container-wrapper 3xl:fixed:px-0 px-6">
         <div className="3xl:fixed:container flex h-(--header-height) items-center gap-2 **:data-[slot=separator]:!h-4">
           <MobileNav

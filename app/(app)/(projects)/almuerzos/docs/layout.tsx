@@ -10,7 +10,7 @@ export default function DocsLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="bg-background relative z-10 flex min-h-svh flex-col theme-container">
+    <div className="bg-background relative z-10 flex min-h-svh flex-col">
       <SiteHeader tree={almuerzosSource.pageTree} />
       <main className="flex flex-1 flex-col">
         <div className="container-wrapper flex flex-1 flex-col px-2">

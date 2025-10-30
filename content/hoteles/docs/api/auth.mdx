@@ -1,0 +1,100 @@
+---
+title: Autenticación
+description: Endpoint para login y datos de sesión.
+---
+
+## Endpoints
+
+### POST /login
+
+> Iniciar sesión y obtener token JWT.
+
+#### Campos Input
+
+Estos campos deben ser enviados desde el <Link href="/hoteles/docs/front-end">Frontend</Link> con FormData o JSON.
+
+| input | type |
+|-------|------|
+| `documento` | string |
+| `password` | string |
+
+Se usa el metodo `loginPost` para la validación y respuesta de la petición.
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/AuthController.php" showLineNumbers
+public function loginPost(Request $request, Response $response, $args) {
+    try {
+        $contentType = $request->getHeaderLine('Content-Type');
+        $data = $request->getParsedBody();
+
+        // Decodificar el cuerpo de la solicitud si es JSON
+        if (str_contains($contentType, 'application/json')) {
+            $data = json_decode($request->getBody()->getContents(), true);
+        }
+
+        // Obtener usuario y contraseña
+        $username = $data['documento'] ?? '';
+        $password = $data['password'] ?? '';
+
+        // Validación de datos
+        if (empty($username) || empty($password)) {
+            $dataJson["error"] = true;
+            $dataJson["message"] = "Username and password are required.";
+            $response->getBody()->write(json_encode($dataJson));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400); // Bad Request
+        }
+
+        // Buscar el usuario en la base de datos
+        $user = $this->usermodel::with('worth', 'profile')->where('documento', $username)->first();
+
+        if ($user && password_verify($password, $user->password)) {
+            // Genera el token y refresh token
+            $token = $this->generateToken($user);
+            $refreshToken = $this->generateRefreshToken($user);
+
+            // Almacenar el refresh token en la base de datos
+            $this->refreshTokenModel::create([
+                'user_id' => $user->id,
+                'refresh_token' => $refreshToken,
+                'expires_at' => date('Y-m-d H:i:s', time() + $this->refreshTokenExpiration)
+            ]);
+
+            $permissionsData = $this->pagesPermissions($user->profile_id);
+
+            // Convertir el objeto a un array
+            $userArray = $user->toArray();
+
+            // Eliminar el campo 'password'
+            unset($userArray['password']);
+
+
+            $response->getBody()->write(json_encode([
+                'success' => true, 
+                'token' => $token, 
+                'refreshToken' => $refreshToken, 
+                'data' => [
+                    'user' => $userArray,
+                    'permissions' => $permissionsData['pages'],
+                ]
+            ]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200); // OK
+        } else {
+            $response->getBody()->write(json_encode(['error' => 'Credenciales incorrectas']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401); // Unauthorized
+        }
+    } catch (Exception $e) {
+        $dataJson["error"] = $e;
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500); // Internal Server Error
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+### GET /api/me
+
+> Obtener informaciòn de usuario autenticado
+
+### POST /api/me/image
+
+> Cambiar imagen del usuario autenticado

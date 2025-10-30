@@ -1,11 +1,7 @@
 ---
 title: API
-description: Documentación completa de la API RESTful del sistema Hoteles
+description: Documentación técnica de todos los endpoints disponibles en la API del sistema de gestión de cortesías para hoteles aliados.
 ---
-
-# API del Sistema Hoteles
-
-Documentación técnica de todos los endpoints disponibles en la API del sistema de gestión de cortesías para hoteles aliados.
 
 ## Introducción
 
@@ -14,33 +10,49 @@ La API del sistema **Hoteles** está construida con **Slim Framework** y sigue l
 ## Características de la API
 
 <div className="grid gap-4 sm:grid-cols-2 mt-6">
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">RESTful</h3>
-    <p className="text-sm text-muted-foreground">
-      Arquitectura REST con endpoints semánticos y uso correcto de métodos HTTP.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Autenticación JWT</h3>
-    <p className="text-sm text-muted-foreground">
-      Tokens seguros para autenticación stateless y control de sesiones.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Respuestas JSON</h3>
-    <p className="text-sm text-muted-foreground">
-      Todas las respuestas están en formato JSON con estructura consistente.
-    </p>
-  </div>
-  
-  <div className="rounded-lg border bg-card p-6">
-    <h3 className="font-semibold mb-2">Manejo de Errores</h3>
-    <p className="text-sm text-muted-foreground">
-      Códigos de estado HTTP apropiados y mensajes de error descriptivos.
-    </p>
-  </div>
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        RESTful
+      </CardTitle>
+      <CardDescription>
+        Arquitectura REST con endpoints semánticos y uso correcto de métodos HTTP.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Autenticación JWT
+      </CardTitle>
+      <CardDescription>
+        Tokens seguros para autenticación stateless y control de sesiones.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Respuestas JSON
+      </CardTitle>
+      <CardDescription>
+        Todas las respuestas están en formato JSON con estructura consistente.
+      </CardDescription>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent>
+      <CardTitle className="mb-2">
+        Manejo de Errores
+      </CardTitle>
+      <CardDescription>
+        Códigos de estado HTTP apropiados y mensajes de error descriptivos.
+      </CardDescription>
+    </CardContent>
+  </Card>
 </div>
 
 ## Stack Tecnológico
@@ -71,21 +83,19 @@ Todas las respuestas de la API siguen una estructura consistente:
 
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Descripción del error"
-  }
+  "error": true,
+  "message": "Descripción del error"
 }
 ```
 
 ## Autenticación
 
-La API utiliza JWT (JSON Web Tokens) para la autenticación. Después de iniciar sesión, debes incluir el token en el header de cada petición:
+La API utiliza JWT (JSON Web Tokens) para la autenticación. Después de iniciar sesión debes incluir en cada petición las credenciales, en su defecto, enviar
+las cookies que se setearon desde el backend de forma segura:
 
-```
-Authorization: Bearer {tu_token_jwt}
-```
+| key | value |
+|-----|-------|
+| hotelesAccess | eyJhbGciOiJIU... |
 
 ## Endpoints Principales
 
@@ -93,108 +103,431 @@ A continuación se presenta un resumen de los principales grupos de endpoints di
 
 ### Autenticación
 
-<div className="rounded-lg border bg-card p-4 mt-4">
-  <code className="text-sm">POST /api/auth/login</code>
-  <p className="text-sm text-muted-foreground mt-2">Iniciar sesión y obtener token JWT</p>
-</div>
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /login</code>
+    </CardTitle>
+    <CardDescription>
+      Iniciar sesión y obtener token JWT.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">POST /api/auth/register</code>
-  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo usuario en el sistema</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/me</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener informaciòn de usuario autenticado
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">POST /api/auth/refresh</code>
-  <p className="text-sm text-muted-foreground mt-2">Renovar token JWT expirado</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/me/image</code>
+    </CardTitle>
+    <CardDescription>
+      Cambiar imagen del usuario autenticado
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">POST /api/auth/logout</code>
-  <p className="text-sm text-muted-foreground mt-2">Cerrar sesión e invalidar token</p>
-</div>
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/auth">documentación</Link>
 
 ### Usuarios
 
-<div className="rounded-lg border bg-card p-4 mt-4">
-  <code className="text-sm">GET /api/users</code>
-  <p className="text-sm text-muted-foreground mt-2">Listar todos los usuarios del sistema</p>
-</div>
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/users/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener los usuarios de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">GET /api/users/{'{id}'}</code>
-  <p className="text-sm text-muted-foreground mt-2">Obtener información de un usuario específico</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/users</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar un usuario.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">PUT /api/users/{'{id}'}</code>
-  <p className="text-sm text-muted-foreground mt-2">Actualizar información de un usuario</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/users/excel</code>
+    </CardTitle>
+    <CardDescription>
+      Descargar los usuarios en archivo Excel.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">DELETE /api/users/{'{id}'}</code>
-  <p className="text-sm text-muted-foreground mt-2">Eliminar un usuario del sistema</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/users/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de usuario.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-### Hoteles
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/users/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar usuario de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-4">
-  <code className="text-sm">GET /api/hotels</code>
-  <p className="text-sm text-muted-foreground mt-2">Listar todos los hoteles aliados</p>
-</div>
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/users">documentación</Link>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">POST /api/hotels</code>
-  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo hotel aliado</p>
-</div>
+### Perfiles
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">GET /api/hotels/{'{id}'}</code>
-  <p className="text-sm text-muted-foreground mt-2">Obtener información detallada de un hotel</p>
-</div>
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/profiles/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener los perfiles de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">PUT /api/hotels/{'{id}'}</code>
-  <p className="text-sm text-muted-foreground mt-2">Actualizar información de un hotel</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/profiles</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar un perfil.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-### Huéspedes
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/profiles/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de perfil.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-4">
-  <code className="text-sm">GET /api/guests</code>
-  <p className="text-sm text-muted-foreground mt-2">Listar todos los huéspedes registrados</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/profiles/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar perfil de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">POST /api/guests</code>
-  <p className="text-sm text-muted-foreground mt-2">Registrar un nuevo huésped para cortesía</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/profiles/\{id}/permissions</code>
+    </CardTitle>
+    <CardDescription>
+      Cambiar permisos por página de un perfil
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">GET /api/guests/search</code>
-  <p className="text-sm text-muted-foreground mt-2">Buscar huésped por documento para verificar cortesía</p>
-</div>
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/profiles">documentación</Link>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">PUT /api/guests/{'{id}'}/redeem</code>
-  <p className="text-sm text-muted-foreground mt-2">Marcar cortesía como redimida en taquilla</p>
-</div>
+### Páginas
 
-### Reportes
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/pages/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener las páginas de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-4">
-  <code className="text-sm">GET /api/reports/hotels</code>
-  <p className="text-sm text-muted-foreground mt-2">Generar reporte de cortesías por hotel</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/pages</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar una página.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">GET /api/reports/period</code>
-  <p className="text-sm text-muted-foreground mt-2">Generar reporte por período de tiempo</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/pages/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de una página.
+    </CardDescription>
+  </CardContent>
+</Card>
 
-<div className="rounded-lg border bg-card p-4 mt-2">
-  <code className="text-sm">GET /api/reports/export</code>
-  <p className="text-sm text-muted-foreground mt-2">Exportar reportes en formato Excel o PDF</p>
-</div>
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/pages/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar página de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/pages">documentación</Link>
+
+### Dominios
+
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/domains/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener los dominios de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/domains</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar un dominio.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/domains/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de un dominio.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/domains/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar dominio de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/domains">documentación</Link>
+
+### Valores
+
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/worths/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener los valores de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/worths</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar un valor.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/worths/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de un valor.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/worths/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar un valor de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/worths">documentación</Link>
+
+### Registros de cortesía
+
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/courtesy-records/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener los registros de cortesías de forma paginada.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/courtesy-records/find-user</code>
+    </CardTitle>
+    <CardDescription>
+      Buscar usuario por numero de documento
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/courtesy-records</code>
+    </CardTitle>
+    <CardDescription>
+      Registrar una cortesía.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/courtesy-records/\{id}</code>
+    </CardTitle>
+    <CardDescription>
+      Editar datos de una cortesía.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/courtesy-records/\{id}/delete</code>
+    </CardTitle>
+    <CardDescription>
+      Eliminar una cortesía de la base de datos.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">POST /api/courtesy-records/\{month}/\{hotel}/\{year}/excel</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener excel por rango de fechas y hotel.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/courtesy-records/chart</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener datos analíticos para gráficas.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/courtesy-records/chartSummary</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener resumen estadístico para las gráficos.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/courtesy-records/\{month}/\{hotel}/\{year}</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener registros y conteo por mes.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/courtesy-records">documentación</Link>
+
+### API para mostrar registros en la web de visitantes
+
+<Card className="mt-4">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">GET /api/visitantes/courtesy-records/data</code>
+    </CardTitle>
+    <CardDescription>
+      Obtener registros y conteo para el día actual.
+    </CardDescription>
+  </CardContent>
+</Card>
+
+<Card className="mt-2">
+  <CardContent>
+    <CardTitle className="mb-2">
+      <code className="text-sm">PUT /api/visitantes/courtesy-records/reclaim</code>
+    </CardTitle>
+    <CardDescription>
+      Reclamar cortesía
+    </CardDescription>
+  </CardContent>
+</Card>
+
+> Para aprender de cada uno de estos endpoints mira su <Link href="/hoteles/docs/api/visitantes">documentación</Link>
 
 ## Códigos de Estado HTTP
 
@@ -217,26 +550,279 @@ Los endpoints que retornan listas implementan paginación automática:
 
 ```json
 {
-  "success": true,
-  "data": [...],
-  "pagination": {
-    "current_page": 1,
-    "per_page": 20,
-    "total": 150,
-    "total_pages": 8
-  }
+  "info": {
+    "count": 0,
+    "pages": 0,
+    "next": null,
+    "prev": null
+  },
+  "results": [...]
 }
 ```
+
+## Archivos importantes
+
+En la carpeta del Backend para tener una guía de como modificar o agregar nuevas funcionalidades se recomienda mirar los siguientes archivos:
+
+### Punto de entrada de la aplicación
+
+> Este archivo es el punto de entrada de la app, se encarga de cargar variables de entorno que se encuentren
+> en el archivo `.env`, carga la configuracion de blade para el renderizado de vistas y rutas API junto con la
+> inicialización de la app Slim, inicializa middlewares necesarios y la inicialización y configuración de Eloquent ORM
+
+<CodeCollapsibleWrapper>
+  ```php title="hoteles-backend/public/index.php" showLineNumbers
+  date_default_timezone_set("America/Bogota");
+  require __DIR__ . '/../vendor/autoload.php';
+
+  use App\Middleware\CorsMiddleware;
+  use DI\Container;
+  use Slim\Factory\AppFactory;
+  use duncan3dc\Laravel\BladeInstance;
+  use Illuminate\Database\Capsule\Manager as Capsule;
+  use Slim\Exception\HttpNotFoundException;
+  use Slim\Exception\HttpForbiddenException;
+  use Psr\Http\Message\ServerRequestInterface as Request;
+  use Slim\Psr7\Factory\ResponseFactory;
+
+  $container = new Container();
+  AppFactory::setContainer($container);
+
+  $app = AppFactory::create();
+
+  // Cargar variables de entorno
+  $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+  $dotenv->load();
+
+  // Configurar Eloquent ORM (Capsule)
+  $capsule = new Capsule;
+  $capsule->addConnection([
+      'driver'    => 'mysql',
+      'host'      => $_ENV['DB_HOST'],
+      'database'  => $_ENV['DB_NAME'],
+      'username'  => $_ENV['DB_USER'],
+      'password'  => $_ENV['DB_PASS'],
+      'charset'   => 'utf8',
+      'collation' => 'utf8_unicode_ci',
+      'prefix'    => '',
+  ]);
+
+  $capsule->setAsGlobal();
+  $capsule->bootEloquent();
+
+  // Configurar Blade
+  $container->set(BladeInstance::class, function() {
+      return new BladeInstance(__DIR__ . '/../src/Views', __DIR__ . '/../cache/views');
+  });
+
+  $container->set('view', function($container) {
+      return $container->get(BladeInstance::class);
+  });
+
+  // Función para registrar controladores automáticamente
+  function registerControllers(Container $container, string $controllersPath): void
+  {
+      $controllerFiles = glob($controllersPath . '/*.php');
+      
+      foreach ($controllerFiles as $file) {
+          $className = 'App\\Controllers\\' . basename($file, '.php');
+          
+          if (class_exists($className)) {
+              $reflectionClass = new ReflectionClass($className);
+              $constructor = $reflectionClass->getConstructor();
+              
+              if ($constructor) {
+                  $parameters = $constructor->getParameters();
+                  $dependencies = [];
+                  
+                  foreach ($parameters as $parameter) {
+                      $type = $parameter->getType();
+                      
+                      if ($type && !$parameter->isDefaultValueAvailable()) {
+                          $typeName = $type->getName();
+                          
+                          if ($container->has($typeName)) {
+                              $dependencies[] = $container->get($typeName);
+                          } else {
+                              throw new Exception("No se puede resolver la dependencia: $typeName");
+                          }
+                      }
+                  }
+                  
+                  $container->set($className, $reflectionClass->newInstanceArgs($dependencies));
+              } else {
+                  $container->set($className, $reflectionClass->newInstance());
+              }
+          }
+      }
+  }
+
+  // Registrar controladores automáticamente
+  registerControllers($container, __DIR__ . '/../src/Controllers');
+
+  // Middleware para manejar errores 404 y 403
+  $errorMiddleware = $app->addErrorMiddleware(true, true, true);
+
+  $responseFactory = new ResponseFactory();
+
+  $errorMiddleware->setErrorHandler(
+      HttpNotFoundException::class,
+      function (Request $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($container, $responseFactory) {
+          $response = $responseFactory->createResponse();
+          $view = $container->get('view'); // Obtén la instancia de BladeInstance desde el contenedor
+          $html = $view->make('errors.404')->render(); // Usa el método make() para obtener la vista y renderiza
+          $response->getBody()->write($html);
+          return $response->withStatus(404);
+      }
+  );
+
+  $errorMiddleware->setErrorHandler(
+      HttpForbiddenException::class,
+      function (Request $request, Throwable $exception, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails) use ($container, $responseFactory) {
+          $response = $responseFactory->createResponse();
+          $view = $container->get('view'); // Obtén la instancia de BladeInstance desde el contenedor
+          $html = $view->make('errors.403')->render(); // Usa el método make() para obtener la vista y renderiza
+          $response->getBody()->write($html);
+          return $response->withStatus(403);
+      }
+  );
+
+  // Agregar middleware CORS globalmente
+  $app->add(new CorsMiddleware());
+
+  // Cargar las rutas
+  (require __DIR__ . '/../src/routes.php')($app);
+
+  // Ejecutar la aplicación
+  $app->run();
+  ```
+</CodeCollapsibleWrapper>
+
+### Rutas
+
+> Este archivo es el que controla todas y cada una de la rutas API con sus respectivos controladores
+> al entrar a este archivo veras rutas referenciadas con su controlador, verificar cada controlador y su funcionalidad
+
+<CodeCollapsibleWrapper>
+  ```php title="hoteles-backend/src/routes.php" showLineNumbers
+  use App\Middleware\AuthMiddleware;
+  use App\Middleware\AuthMiddlewareVisitantes;
+  use Slim\App;
+  use App\Controllers\AuthController;
+  use App\Controllers\PagesController;
+  use App\Controllers\ProfilesController;
+  use App\Controllers\DomainsController;
+  use App\Controllers\HomeController;
+  use App\Controllers\ReservationsController;
+  use App\Controllers\UsuariosController;
+  use App\Controllers\WorthsController;
+
+  return function (App $app) {
+      $app->get('/', [HomeController::class, 'index']);
+
+
+      $app->post('/login', [AuthController::class, 'loginPost']);
+      $app->post('/refresh', [AuthController::class, 'refreshToken']);
+
+      $app->group('/api/visitantes', function ($group) {
+          $group->group('/courtesy-records', function ($group) {
+              $group->put('/reclaim', [ReservationsController::class, 'reclaim'])->setName('courtesy-records.reclaim');
+
+              // Paginación
+              $group->get('/data', [ReservationsController::class, 'dataVisitantes'])->setName('courtesy-records.data'); // datos paginados
+          });
+      })->add(new AuthMiddlewareVisitantes($_ENV['JWT_SECRET']));
+
+      $app->group('/api', function ($group) {
+
+          // ME
+          $group->group('/me', function ($group) {
+              $group->get('', [AuthController::class, 'index'])->setName('me.index');
+              $group->post('/image', [AuthController::class, 'image'])->setName('me.image');
+          });
+
+
+          // RESERVATIONS
+          $group->group('/courtesy-records', function ($group) {
+              $group->post('', [ReservationsController::class, 'store'])->setName('courtesy-records.store');
+              $group->post('/find-user', [ReservationsController::class, 'findUser'])->setName('courtesy-records.findUser');
+              $group->post('/{id}', [ReservationsController::class, 'update'])->setName('courtesy-records.update');
+              $group->post('/{id}/delete', [ReservationsController::class, 'delete'])->setName('courtesy-records.delete');
+              $group->post('/{month}/{hotel}/{year}/excel', [ReservationsController::class, 'excelMonth'])->setName('statistics.excelMonth');
+
+              // Paginación
+              $group->get('/data', [ReservationsController::class, 'data'])->setName('courtesy-records.data'); // datos paginados
+              $group->get('/chart', [ReservationsController::class, 'chart'])->setName('statistics.chart');
+              $group->get('/chartSummary', [ReservationsController::class, 'chartSummary'])->setName('statistics.chartSummary');
+              $group->get('/{month}/{hotel}/{year}', [ReservationsController::class, 'month'])->setName('statistics.month');
+          });
+
+          // WORTHS
+          $group->group('/worths', function ($group) {
+              $group->post('', [WorthsController::class, 'store'])->setName('worths.store');
+              $group->post('/{id}', [WorthsController::class, 'update'])->setName('worths.update');
+              $group->post('/{id}/delete', [WorthsController::class, 'delete'])->setName('worths.delete');
+
+              // Paginación
+              $group->get('/data', [WorthsController::class, 'data'])->setName('worths.data'); // datos paginados
+          });
+
+          // DOMAINS
+          $group->group('/domains', function ($group) {
+              $group->post('', [DomainsController::class, 'store'])->setName('domains.store');
+              $group->post('/{id}', [DomainsController::class, 'update'])->setName('domains.update');
+              $group->post('/{id}/delete', [DomainsController::class, 'delete'])->setName('domains.delete');
+
+              // Paginación
+              $group->get('/data', [DomainsController::class, 'data'])->setName('domains.data'); // datos paginados
+          });
+
+          // PAGES
+          $group->group('/pages', function ($group) {
+              $group->post('', [PagesController::class, 'store'])->setName('pages.store');
+              $group->post('/{id}', [PagesController::class, 'update'])->setName('pages.update');
+              $group->post('/{id}/delete', [PagesController::class, 'delete'])->setName('pages.delete');
+
+              // Paginación
+              $group->get('/data', [PagesController::class, 'data'])->setName('pages.data'); // datos paginados
+          });
+
+          // PROFILES
+          $group->group('/profiles', function ($group) {
+              $group->post('', [ProfilesController::class, 'store'])->setName('profiles.store');
+              $group->post('/{id}', [ProfilesController::class, 'update'])->setName('profiles.update');
+              $group->post('/{id}/delete', [ProfilesController::class, 'delete'])->setName('profiles.delete');
+
+              // Paginación
+              $group->get('/data', [ProfilesController::class, 'data'])->setName('profiles.data'); // datos paginados
+
+              $group->post('/{id}/permissions', [ProfilesController::class, 'savePermissions'])->setName('profiles.savePermissions');
+          });
+
+          // USUARIOS
+          $group->group('/users', function ($group) {
+              $group->get('/data', [UsuariosController::class, 'data'])->setName('users.data'); // datos paginados
+
+              $group->post('', [UsuariosController::class, 'store'])->setName('users.store');
+              $group->post('/excel', [UsuariosController::class, 'excel'])->setName('users.excel'); // datos paginados
+              $group->post('/{id}', [UsuariosController::class, 'update'])->setName('users.update');
+              $group->post('/{id}/delete', [UsuariosController::class, 'delete'])->setName('users.delete');
+          });
+
+      })->add(new AuthMiddleware($_ENV['JWT_SECRET']));
+  };
+  ```
+</CodeCollapsibleWrapper>
 
 ## Próximos Pasos
 
 Explora la documentación detallada de cada endpoint:
 
-- [Autenticación](/hoteles/api/auth) - Endpoints de login, registro y gestión de tokens
-- [Usuarios](/hoteles/api/users) - Gestión de usuarios del sistema
-- [Hoteles](/hoteles/api/hotels) - CRUD de hoteles aliados
-- [Huéspedes](/hoteles/api/guests) - Registro y verificación de cortesías
-- [Reportes](/hoteles/api/reports) - Generación de estadísticas y reportes
+- <Link href="/hoteles/docs/api/auth">Autenticación</Link> - Endpoints de login, registro y gestión de tokens
+- <Link href="/hoteles/docs/api/users">Usuarios</Link> - Gestión de usuarios del sistema
+- <Link href="/hoteles/docs/api/hotels">Hoteles</Link> - CRUD de hoteles aliados
+- <Link href="/hoteles/docs/api/guests">Huéspedes</Link> - Registro y verificación de cortesías
+- <Link href="/hoteles/docs/api/reports">Reportes</Link> - Generación de estadísticas y reportes
 
 <Callout type="info">
 **Nota**: Cada endpoint está documentado con ejemplos de peticiones, respuestas y posibles errores.

@@ -3,7 +3,6 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { Announcement } from "@/components/announcement"
-import { ExamplesNav } from "@/components/examples-nav"
 import {
   PageActions,
   PageHeader,
@@ -15,6 +14,8 @@ import { ThemeSelector } from "@/components/theme-selector"
 import { Button } from "@/registry/new-york-v4/ui/button"
 
 import { RootComponents } from "./components"
+import { SiteHeader } from "@/components/site-header"
+import { source } from "@/lib/source"
 
 const title = "Documentación de proyectos"
 const description =
@@ -49,49 +50,51 @@ export const metadata: Metadata = {
 
 export default function IndexPage() {
   return (
-    <div className="flex flex-1 flex-col">
-      <PageHeader>
-        <Announcement />
-        <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
-        <PageHeaderDescription>{description}</PageHeaderDescription>
-        <PageActions>
-          <Button asChild size="sm">
-            <Link href="/docs">Empezar</Link>
-          </Button>
-          <Button asChild size="sm" variant="ghost">
-            <Link href="/docs/projects">Ver Proyectos</Link>
-          </Button>
-        </PageActions>
-      </PageHeader>
-      <PageNav className="hidden md:flex">
-        <ExamplesNav className="[&>a:first-child]:text-primary flex-1 overflow-hidden" />
-        <ThemeSelector className="mr-4 hidden md:flex" />
-      </PageNav>
-      <div className="container-wrapper section-soft flex-1 pb-6">
-        <div className="container overflow-hidden">
-          <section className="border-border/50 -mx-4 w-[160vw] overflow-hidden rounded-lg border md:hidden md:w-[150vw]">
-            <Image
-              src="/r/styles/new-york-v4/dashboard-01-light.png"
-              width={1400}
-              height={875}
-              alt="Dashboard"
-              className="block dark:hidden"
-              priority
-            />
-            <Image
-              src="/r/styles/new-york-v4/dashboard-01-dark.png"
-              width={1400}
-              height={875}
-              alt="Dashboard"
-              className="hidden dark:block"
-              priority
-            />
-          </section>
-          <section className="theme-container hidden md:block">
-            <RootComponents />
-          </section>
+    <>
+      <SiteHeader tree={source.pageTree} />
+      <div className="flex flex-1 flex-col">
+        <PageHeader>
+          <Announcement />
+          <PageHeaderHeading className="max-w-4xl">{title}</PageHeaderHeading>
+          <PageHeaderDescription>{description}</PageHeaderDescription>
+          <PageActions>
+            <Button asChild size="sm">
+              <Link href="/docs">Empezar</Link>
+            </Button>
+            <Button asChild size="sm" variant="ghost">
+              <Link href="/docs/projects">Ver Proyectos</Link>
+            </Button>
+          </PageActions>
+        </PageHeader>
+        <PageNav className="hidden md:flex">
+          <ThemeSelector className="mr-4 hidden md:flex" />
+        </PageNav>
+        <div className="container-wrapper section-soft flex-1 pb-6">
+          <div className="container overflow-hidden">
+            <section className="border-border/50 -mx-4 w-[160vw] overflow-hidden rounded-lg border md:hidden md:w-[150vw]">
+              <Image
+                src="/r/styles/new-york-v4/dashboard-01-light.png"
+                width={1400}
+                height={875}
+                alt="Dashboard"
+                className="block dark:hidden"
+                priority
+              />
+              <Image
+                src="/r/styles/new-york-v4/dashboard-01-dark.png"
+                width={1400}
+                height={875}
+                alt="Dashboard"
+                className="hidden dark:block"
+                priority
+              />
+            </section>
+            <section className="theme-container hidden md:block">
+              <RootComponents />
+            </section>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

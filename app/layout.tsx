@@ -5,7 +5,6 @@ import { fontVariables } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { LayoutProvider } from "@/hooks/use-layout"
 import { ActiveThemeProvider } from "@/components/active-theme"
-import { Analytics } from "@/components/analytics"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/registry/new-york-v4/ui/sonner"
@@ -91,7 +90,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
+          "text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)] theme-container",
           fontVariables
         )}
       >
@@ -102,7 +101,6 @@ export default function RootLayout({
                 {children}
                 <TailwindIndicator />
                 <Toaster position="top-center" />
-                <Analytics />
               </ActiveThemeProvider>
             </LayoutProvider>
           </NextAuthSessionProvider>

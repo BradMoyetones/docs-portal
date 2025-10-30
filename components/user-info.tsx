@@ -2,7 +2,6 @@
 
 import { signOut, useSession } from "next-auth/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { LogOut } from "lucide-react"
 import { Spinner } from "./ui/spinner"

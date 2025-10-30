@@ -4,7 +4,6 @@ import { Check, Clipboard } from "lucide-react"
 import { toast } from "sonner"
 
 import { type Color } from "@/lib/colors"
-import { trackEvent } from "@/lib/events"
 import { useColors } from "@/hooks/use-colors"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 
@@ -25,14 +24,6 @@ export function Color({ color }: { color: Color }) {
       }
       onClick={() => {
         copyToClipboard(color[format])
-        trackEvent({
-          name: "copy_color",
-          properties: {
-            color: color.id,
-            value: color[format],
-            format,
-          },
-        })
         setLastCopied(color[format])
         toast.success(`Copied ${color[format]} to clipboard.`)
       }}
