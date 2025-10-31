@@ -95,6 +95,128 @@ public function loginPost(Request $request, Response $response, $args) {
 
 > Obtener informaciòn de usuario autenticado
 
+En este endpoint solo debe hacer la petición con las `credenciales` eso quiere decir que en las cabeceras
+de la petición deben estar las `cookies` que se setearon al iniciar sesión.
+
+Se usa el metodo index para la validación y respuesta de la petición.
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/AuthController.php" showLineNumbers
+public function index(Request $request, Response $response) {
+    // Obtener el ID del usuario desde el atributo del request
+    $userId = $request->getAttribute('user')->sub; // Aquí se accede al atributo 'user'
+
+    try{
+        // Buscar el usuario en la base de datos
+        $user = User::with('worth', 'profile')->find($userId);
+        if (!$user) {
+            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+
+        $permissionsData = $this->pagesPermissions($user->profile_id);
+
+        // Convertir el objeto a un array
+        $userArray = $user->toArray();
+
+        // Eliminar el campo 'password'
+        unset($userArray['password']);
+    
+        // Devolver el usuario
+        $response->getBody()->write(json_encode([
+            'user' => $userArray,
+            'permissions' => $permissionsData['pages']
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    }catch(Exception $e){
+        $response->getBody()->write(json_encode([
+            'error' => $e
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
 ### POST /api/me/image
 
 > Cambiar imagen del usuario autenticado
+
+#### Campos Input
+
+En este endpoint se recibe solo un campo en FormData o JSON
+
+| input | type |
+|-------|------|
+| `image` | string *->* base64 |
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/AuthController.php" showLineNumbers
+public function image(Request $request, Response $response, $args) {
+    $userId = $request->getAttribute('user')->sub; // Aquí se accede al atributo 'user'
+
+    try {
+        $contentType = $request->getHeaderLine('Content-Type');
+        $data = $request->getParsedBody();
+
+        // Decodificar el cuerpo de la solicitud si es JSON
+        if (str_contains($contentType, 'application/json')) {
+            $data = json_decode($request->getBody()->getContents(), true);
+        }
+
+        // Obtener usuario y contraseña
+        $image = $data['image'] ?? null;
+
+        // Obtener el ID del usuario desde el atributo del request
+
+        // Buscar el usuario en la base de datos
+        $user = User::find($userId);
+        if (!$user) {
+            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+
+        if (!$image) {
+            $response->getBody()->write(json_encode(['error' => 'Imagen requerida']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        }
+
+        // Validar que sea una imagen en Base64
+        if (!preg_match('/^data:image\/(png|jpeg|jpg|gif);base64,/', $image)) {
+            $response->getBody()->write(json_encode(['message' => 'El formato de imagen es inválido']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        }
+
+        // Decodificar la imagen para verificar si es válida
+        $base64Data = substr($image, strpos($image, ',') + 1);
+        $decodedImage = base64_decode($base64Data, true);
+
+        if ($decodedImage === false) {
+            $response->getBody()->write(json_encode(['message' => 'La imagen no es válida']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        }
+
+        $user->update([
+            "image" => $image
+        ]);
+    
+        // Devolver el usuario
+        $response->getBody()->write(json_encode([
+            'message' => 'Imagen subida'
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } catch (Exception $e) {
+        $dataJson["message"] = "Error al subir imagen";
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500); // Internal Server Error
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+## Cambios constantes
+
+<Callout type="warning">
+Estar pendientes de este parte de la documentación, ya que que próximamente se realizarán cambios en este aplicactivo
+por ende el código o lógica no sean los mismos.
+</Callout>

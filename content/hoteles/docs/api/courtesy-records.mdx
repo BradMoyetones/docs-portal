@@ -2,3 +2,950 @@
 title: Courtesy Records
 description: Endpoint para el registro de cortesias y todas sus acciones.
 ---
+
+## Endpoints
+
+### GET /api/courtesy-records/data
+
+> Obtener los registros de cortesías de forma paginada.
+
+Este endpoint nos ayuda a obtener los registros estructurados de forma páginada del modelo de datos. Se  enviar parametros para navegar
+entre la paginación y asi obtener la cantidad de registros por página los cuales son `30`, alterables desde el metodo.
+
+#### Campos Input
+
+Estos campos deben ser enviados como query params
+
+| input | type | description |
+|-------|------|-------------|
+| `page` | string | Campo para navegar entre la paginación de los registros |
+| `search` | string | Campo para buscar entre todos los registros por una palabra o término clave |
+
+> Al final del metodo esta la respuesta estructurada con un estado `200`
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function data(Request $request, Response $response, $args){ 
+    $userId = $request->getAttribute('user')->sub; // Aquí se accede al atributo 'user'
+
+    // Obtener el parámetro de la página desde la consulta, por defecto es 1
+    $page = (int) ($request->getQueryParams()['page'] ?? 1);
+    $perPage = 30; // Puedes ajustar el número de registros por página
+    
+    // Obtener el parámetro de búsqueda
+    $search = $request->getQueryParams()['search'] ?? null;
+    
+    $dataJson = [
+        "info" => [
+            "count" => 0,
+            "pages" => 0,
+            "next" => null,
+            "prev" => null
+        ],
+        "results" => [],
+    ];
+
+    $user = $this->userModel::find($userId);
+
+    // Construir la consulta base
+    $query = $this->reservationModel::with('receptionistUser.worth', 'user', 'hotelGuests.user')->orderBy('id', 'DESC');
+    
+    if($user->worth_id !== 35){
+        $query->where(function($q) use ($user) {
+            $q->whereHas('receptionistUser', function($query) use ($user) {
+                $query->where('worth_id', $user->worth_id);
+            });
+        });
+    }
+
+    // Si el parámetro de búsqueda no es nulo o vacío, agregar las condiciones de búsqueda
+    if ($search) {
+        $query->where(function($q) use ($search) {
+            $q->where('reservation_number', 'LIKE', "%$search%")
+                ->orWhere('start_date', 'LIKE', "%$search%")
+                ->orWhere('end_date', 'LIKE', "%$search%")
+                ->orWhere('room_number', 'LIKE', "%$search%")
+                ->orWhere('visite_date', 'LIKE', "%$search%")
+                ->orWhere('note', 'LIKE', "%$search%")
+
+                // Buscar en los campos de la relación 'profile'
+                ->orWhereHas('user', function($query) use ($search) {
+                    $query->where('nombre', 'LIKE', "%$search%")
+                        ->orWhere('apellido', 'LIKE', "%$search%")
+                        ->orWhere('documento', 'LIKE', "%$search%")
+                        ->orWhere('email', 'LIKE', "%$search%")
+                        ->orWhere('telefono', 'LIKE', "%$search%");
+                });
+        });
+    }
+
+    // Obtener el total de registros (aplicando el filtro de búsqueda si es necesario)
+    $totalRegistros = $query->count();
+    $totalPages = ceil($totalRegistros / $perPage);
+    
+    // Obtener los usuarios paginados
+    $reservations = $query->skip(($page - 1) * $perPage)
+                        ->take($perPage)
+                        ->get();
+
+    // Construir el objeto de respuesta
+    $dataJson = [
+        "info" => [
+            "count" => $totalRegistros,
+            "pages" => $totalPages,
+            "next" => $page < $totalPages ? $_ENV['BASE_URL']."/api/courtesy-records/data?page=" . ($page + 1) : null,
+            "prev" => $page > 1 ? $_ENV['BASE_URL']."/api/courtesy-records/data?page=" . ($page - 1) : null,
+        ],
+        "results" => $reservations,
+    ];
+
+    $response->getBody()->write(json_encode($dataJson));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+}
+```
+</CodeCollapsibleWrapper>
+
+<Callout type="warning">
+Hay que tener en cuenta que para accerder a este endpoint se requiere estar autenticado al igual que los siguientes 
+endpoint documentados en esta sección.
+</Callout>
+
+### POST /api/courtesy-records/find-user
+
+> Buscar usuario por numero de documento.
+
+Este endpoint es de utilidad y utiliza el metodo `findUser` para obtener un usuario por numero de documento y autocompletar la información 
+de cada input en el front-end de forma automática.
+
+#### Campos Input
+
+Estos campos deben ser enviados como FormData o JSON.
+
+| input | type | description |
+|-------|------|-------------|
+| `value` | string | Esta debe ser el número de documento de la persona. |
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function findUser(Request $request, Response $response, $args){
+    // Datos iniciales de respuesta
+    $dataJson = [
+        "success" => false,
+        "error" => false,
+        "message" => "",
+        "user" => null,
+    ];
+
+    $contentType = $request->getHeaderLine('Content-Type');
+    $data = $request->getParsedBody();
+
+    // Decodificar el cuerpo de la solicitud si es JSON
+    if (str_contains($contentType, 'application/json')) {
+        $data = json_decode($request->getBody()->getContents(), true);
+    }
+
+    try{
+        $value = $data["value"] ?? null;
+
+        $user = $this->userModel::where('documento', $value)
+            ->orWhere('email', $value)
+            ->first();
+
+        
+        $dataJson["success"] = true;
+        $dataJson["message"] = "Usuario encontrado";
+        $dataJson["user"] = $user;
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200); // Bad Request
+    } catch (Exception $e) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = "An unexpected error occurred.";
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500); // Internal Server Error
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+### POST /api/courtesy-records
+
+> Registrar una cortesía.
+
+Este endpoint se utiliza para hacer el registro de una cortesía desde el formulario del front-end utilizando el 
+metodo `store`.
+
+#### Campos Input
+
+Estos campos deben ser enviados como FormData o JSON.
+
+| input | type | description |
+|-------|------|-------------|
+| `name` | string | Este campo debe ser el nombre de la persona titular del registro. |
+| `lastName` | string | Este campo debe ser el apellido de la persona titular del registro. |
+| `documento` | string | Este campo debe ser el documento de la persona titular del registro. |
+| `phone` | string | Este campo debe ser el numero celular de la persona titular del registro. |
+| `email` | string | Este campo debe ser el email de la persona titular del registro. |
+| `dateRange` | object | Este campo de ser un objeto que debe tener dentro dos key, una llamada `from` y otra llamada `to`. |
+| `visiteDate` | string | Este campo de ser la fecha en el que la persona hará la visita al parque Jaime Duque en formato `YYYY-MM-DD`. |
+| `users` | array | Este debe ser un array de objetos, cada objeto debe tener los campos `name`, `last_name` y `documento`. |
+
+#### Tipado de objetos
+
+> Aqui se muestra un breve ejemplo de como seria la estructura de datos
+
+```ts title="types.ts"
+type DateRange = {
+    from: string; // Fecha de inicio (YYYY-MM-DD)
+    to: string;   // Fecha de fin (YYYY-MM-DD)
+};
+
+type User = {
+    name: string;       // Nombre del usuario
+    last_name: string;  // Apellido del usuario
+    documento: string;  // Documento del usuario
+};
+
+interface RegistroVisita {
+    name: string;        // Nombre del titular del registro
+    lastName: string;    // Apellido del titular del registro
+    documento: string;   // Documento del titular del registro
+    phone: string;       // Número celular del titular
+    email: string;       // Correo electrónico del titular
+    dateRange: DateRange; // Objeto con fechas de inicio y fin
+    visiteDate: string;  // Fecha de la visita (YYYY-MM-DD)
+    users: User[];       // Lista de usuarios asociados a la visita
+}
+```
+
+#### Código del metodo
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function store(Request $request, Response $response, $args) { 
+    $userId = $request->getAttribute('user')->sub; // Aquí se accede al atributo 'user'
+
+    $dataJson = [
+        "success" => false,
+        "error" => false,
+        "message" => "",
+        "reservation" => null,
+    ];
+
+    $contentType = $request->getHeaderLine('Content-Type');
+    $data = $request->getParsedBody();
+
+    if (str_contains($contentType, 'application/json')) {
+        $data = json_decode($request->getBody()->getContents(), true);
+    }
+
+    try {
+        Capsule::beginTransaction();
+        // 🔹 Validar y manejar ownerData
+        $user = $this->handleOwnerData($data["ownerData"] ?? null);
+        $ownerDocument = $user->documento; // Documento del propietario
+
+        // 🔹 Extraer y validar fechas con Carbon
+        $timezone = 'America/Bogota';
+        $startDate = Carbon::parse($data["dateRange"]["from"])->setTimezone($timezone)->format("Y-m-d");
+        $endDate = Carbon::parse($data["dateRange"]["to"])->setTimezone($timezone)->format("Y-m-d");
+        $visiteDate = Carbon::parse($data["visiteDate"])->setTimezone($timezone)->format("Y-m-d");
+        $today = Carbon::today()->format("Y-m-d");
+
+        if ($startDate < $today) {
+            throw new Exception("La fecha de inicio no puede ser menor al día actual.");
+        }
+
+        if ($endDate < $startDate) {
+            throw new Exception("La fecha de fin no puede ser menor que la fecha de inicio.");
+        }
+
+        if ($visiteDate < $startDate || $visiteDate > $endDate) {
+            throw new Exception("La fecha de visita debe estar entre la fecha de inicio y fin.$startDate");
+        }
+
+        $existReservationNumber = $this->reservationModel::where('reservation_number', $data["reservationNumber"])->first();
+
+        if($existReservationNumber){
+            throw new Exception("El numero de reserva ya existe.");
+        }
+
+        // 🔹 Validar que el owner no esté en los acompañantes
+        $accompanyingUsers = $data["users"] ?? [];
+        foreach ($accompanyingUsers as $guest) {
+            if ($guest["documento"] == $ownerDocument) {
+                throw new Exception("El propietario no puede estar como acompañante en la reserva.");
+            }
+        }
+
+        // 🔹 Crear reserva
+        $reservation = $this->reservationModel::create([
+            'receptionist_user_id' => $userId,
+            "reservation_number" => $data["reservationNumber"],
+            "start_date" => $startDate,
+            "end_date" => $endDate,
+            "user_id" => $user->id, 
+            "room_number" => $data["roomNumber"],
+            "visite_date" => $visiteDate,
+            "note" => $data["note"] ?? null,
+        ]);
+
+        // 🔹 Registrar acompañantes en hotel_guests
+        $accompanyingUsers = $data["users"] ?? [];
+        $hotelGuestEntries = [];
+
+        $uniqueGuests = collect($accompanyingUsers)
+            ->unique('documento') // Elimina duplicados por documento
+            ->values(); // Reindexar el array
+
+        foreach ($uniqueGuests as $guest) {
+            $existingGuest = $this->userModel::withTrashed()->where('documento', $guest["documento"])->first();
+
+            if ($existingGuest && $existingGuest->trashed()) {
+                $existingGuest->restore();
+            }
+
+            if (!$existingGuest) {
+                $existingGuest = $this->userModel::create([
+                    "nombre" => $guest["name"],
+                    "apellido" => $guest["last_name"],
+                    "documento" => $guest["documento"],
+                    "profile_id" => $this->guestProfile,
+                ]);
+            }
+
+            $hotelGuestEntries[] = [
+                "reservation_id" => $reservation->id,
+                "user_id" => $existingGuest->id,
+            ];
+        }
+
+        if (!empty($hotelGuestEntries)) {
+            $this->hotelGuestModel::insert($hotelGuestEntries);
+        }
+
+        $primerNombre = explode(' ', trim($reservation->user->nombre))[0];
+        $fechaFormateada = Carbon::parse($reservation->visite_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+        $html = Mailer::renderTemplate(
+            companyName: 'Fundación Parque Jaime Duque',
+            title: $primerNombre,
+            messageHtml: "En este momento tu descuento ha sido registrado con el número de reserva <strong>{$reservation->reservation_number}</strong> con fecha de visita al parque el <strong>{$fechaFormateada}</strong>, si tienes alguna duda comunícate con nosotros. <br> <br> Tienes el 25% de descuento en el brazalete legado, no incluye atracciones con propositos, deberas llevar documentos de identificación para presentarlos en taquillas. <br><br> Recuerda que, si se presenta algún inconveniente en el proceso de reserva, debes comunicarte directamente con el hotel, la Fundación Parque Jaime Duque únicamente valida el beneficio.",
+        );
+
+        $isSend = Mailer::send($reservation->user->email, "Notificación Automática - Registro de descuento", $html);
+
+        if(!$isSend){
+            throw new Exception("No se pudo enviar el correo electrónico");
+        }
+        Capsule::commit();
+
+        $dataJson["success"] = true;
+        $dataJson["message"] = "Reserva creada con éxito.";
+        $dataJson["reservation"] = $reservation;
+        $response->getBody()->write(json_encode($dataJson));
+
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+    } catch (Exception $e) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = $e->getMessage();
+        $response->getBody()->write(json_encode($dataJson));
+
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+}
+
+private function handleOwnerData($ownerData) {
+    if (!$ownerData) {
+        throw new Exception("Datos del propietario faltantes.");
+    }
+
+    // 🔹 Validaciones manuales
+    $requiredFields = ["name", "lastName", "documento", "phone", "email"];
+    foreach ($requiredFields as $field) {
+        if (empty($ownerData[$field])) {
+            throw new Exception("El campo '{$field}' es obligatorio.");
+        }
+    }
+
+    if (!filter_var($ownerData["email"], FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("El correo electrónico no es válido.");
+    }
+
+    if (!filter_var($ownerData["documento"], FILTER_VALIDATE_INT)) {
+        throw new Exception("El número de documento debe ser un número entero válido.");
+    }
+    
+    if (!filter_var($ownerData["phone"], FILTER_VALIDATE_INT)) {
+        throw new Exception("El número de telefono debe ser un número entero válido.");
+    }
+
+    // 🔹 Verificar que el correo no esté en uso por otra persona
+    $existingEmailUser = $this->userModel::withTrashed()
+        ->where('email', $ownerData["email"])
+        ->where('documento', '!=', $ownerData["documento"])
+        ->first();
+
+    if ($existingEmailUser) {
+        throw new Exception("El correo electrónico ya está registrado por otra persona.");
+    }
+
+    // 🔹 Buscar usuario por documento, incluyendo los soft deleted
+    $user = $this->userModel::withTrashed()->where('documento', $ownerData["documento"])->first();
+
+    if ($user) {
+        // Si está soft deleted, lo restauramos
+        if ($user->trashed()) {
+            $user->restore();
+        }
+
+        // Actualizar datos
+        $user->update([
+            "nombre" => $ownerData["name"],
+            "apellido" => $ownerData["lastName"],
+            "telefono" => $ownerData["phone"],
+            "email" => $ownerData["email"],
+        ]);
+    } else {
+        // Si no existe, crearlo
+        $user = $this->userModel::create([
+            "nombre" => $ownerData["name"],
+            "apellido" => $ownerData["lastName"],
+            "documento" => $ownerData["documento"],
+            "telefono" => $ownerData["phone"],
+            "email" => $ownerData["email"],
+            "profile_id" => $this->guestProfile,
+        ]);
+    }
+
+    return $user;
+}
+```
+</CodeCollapsibleWrapper>
+
+### POST /api/courtesy-records/\{id}
+
+> Editar datos de una cortesía.
+
+Este endpoint se utiliza para hacer la edición de una cortesía, reutiliza la misma estructura y tipado del endpoint anterior 
+solo que este recibe un `id` como `slug` en la url.
+
+Se utiliza el metodo `update` para realizar esta operación.
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function update(Request $request, Response $response, $args)
+{
+    $userId = $request->getAttribute('user')->sub; // Aquí se accede al atributo 'user'
+
+    // Datos iniciales de respuesta
+    $dataJson = [
+        "success" => false,
+        "error" => false,
+        "message" => "",
+        "reservation" => null,
+    ];
+
+    $contentType = $request->getHeaderLine('Content-Type');
+    $data = $request->getParsedBody();
+
+    // Decodificar el cuerpo de la solicitud si es JSON
+    if (str_contains($contentType, 'application/json')) {
+        $data = json_decode($request->getBody()->getContents(), true);
+    }
+
+    try {
+        // Buscar la reserva por ID
+        $userSession = $this->userModel::find($userId);
+        $reservation = $this->reservationModel::with('receptionistUser')->find($args['id']);
+
+        if (!$reservation) {
+            throw new Exception("La reserva con ID {$args['id']} no existe.");
+        }
+
+        if ($userSession->worth_id !== $reservation->receptionistUser->worth_id) {
+            throw new Exception("No tienes permisos de editar este registro.");
+        }
+
+        if ($reservation->reclaimed) {
+            throw new Exception("No tienes permisos de editar este registro.");
+        }
+
+        if ($reservation->visite_date && Carbon::parse($reservation->visite_date)->toDateString() < Carbon::today()->toDateString()) {
+            throw new Exception("No se puede editar la reserva porque su fecha de visita ya pasó.");
+        }
+
+        // Extraer y validar fechas con Carbon
+        $startDate = Carbon::parse($data["dateRange"]["from"])->format("Y-m-d");
+        $endDate = Carbon::parse($data["dateRange"]["to"])->format("Y-m-d");
+        $visiteDate = Carbon::parse($data["visiteDate"])->format("Y-m-d");
+        $today = Carbon::today()->format("Y-m-d");
+
+        if ($startDate < $today) {
+            throw new Exception("La fecha de inicio no puede ser menor al día actual.");
+        }
+
+        if ($endDate < $startDate) {
+            throw new Exception("La fecha de fin no puede ser menor que la fecha de inicio.");
+        }
+
+        if ($visiteDate < $startDate || $visiteDate > $endDate) {
+            throw new Exception("La fecha de visita debe estar entre la fecha de inicio y fin.");
+        }
+
+        // Verificar si el número de reserva ya existe en otro registro
+        $existReservationNumber = $this->reservationModel::where('reservation_number', $data["reservationNumber"])
+            ->where('id', '!=', $reservation->id)
+            ->first();
+
+        if ($existReservationNumber) {
+            throw new Exception("El número de reserva ya existe en otra reserva.");
+        }
+
+        Capsule::beginTransaction();
+
+        // Actualizar la reserva
+        $reservation->update([
+            "reservation_number" => $data["reservationNumber"],
+            "start_date" => $startDate,
+            "end_date" => $endDate,
+            "room_number" => $data["roomNumber"],
+            "visite_date" => $visiteDate,
+            "note" => $data["note"] ?? $reservation->note,
+        ]);
+
+        // Manejar los acompañantes (hotel_guests)
+        $accompanyingUsers = $data["users"] ?? [];
+        $hotelGuestEntries = [];
+        $uniqueGuests = collect($accompanyingUsers)
+            ->unique('documento') // Elimina duplicados por documento
+            ->values(); // Reindexar el array
+
+        foreach ($uniqueGuests as $guest) {
+            $existingGuest = $this->userModel::where('documento', $guest["documento"])->first();
+
+            if (!$existingGuest) {
+                $existingGuest = $this->userModel::create([
+                    "nombre" => $guest["name"],
+                    "apellido" => $guest["last_name"],
+                    "documento" => $guest["documento"],
+                    "profile_id" => $this->guestProfile,
+                ]);
+            }
+
+            $hotelGuestEntries[] = [
+                "reservation_id" => $reservation->id,
+                "user_id" => $existingGuest->id,
+            ];
+        }
+
+        // Eliminar los acompañantes anteriores y registrar los nuevos
+        $this->hotelGuestModel::where('reservation_id', $reservation->id)->delete();
+        if (!empty($hotelGuestEntries)) {
+            $this->hotelGuestModel::insert($hotelGuestEntries);
+        }
+
+        $primerNombre = explode(' ', trim($reservation->user->nombre))[0];
+        $fechaFormateada = Carbon::parse($reservation->visite_date)->locale('es')->isoFormat('D [de] MMMM [de] YYYY');
+        $html = Mailer::renderTemplate(
+            companyName: 'Fundación Parque Jaime Duque',
+            title: $primerNombre,
+            messageHtml: "En este momento la información de tu descuento ha sido actuzalizada con el número de reserva <strong>{$reservation->reservation_number}</strong> con fecha de visita al parque el <strong>{$fechaFormateada}</strong>, si tienes alguna duda comunícate con nosotros. <br> <br> Tienes el 25% de descuento en el brazalete legado, no incluye atracciones con propositos, deberas llevar documentos de identificación para presentarlos en taquillas. <br><br> Recuerda que, si se presenta algún inconveniente en el proceso de reserva, debes comunicarte directamente con el hotel, la Fundación Parque Jaime Duque únicamente valida el beneficio.",
+        );
+
+        $isSend = Mailer::send($reservation->user->email, "Notificación Automática - Actualización de descuento", $html);
+        if(!$isSend){
+            throw new Exception("No se pudo enviar el correo electrónico");
+        }
+        Capsule::commit();
+
+        $reservationEdited = $this->reservationModel::with('receptionistUser', 'user', 'hotelGuests.user')->find($reservation->id);
+
+        // Respuesta de éxito
+        $dataJson["success"] = true;
+        $dataJson["message"] = "Reserva actualizada con éxito.";
+        $dataJson["reservation"] = $reservationEdited;
+        $response->getBody()->write(json_encode($dataJson));
+
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } catch (Exception $e) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = $e->getMessage();
+        $response->getBody()->write(json_encode($dataJson));
+
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+### POST /api/courtesy-records/\{id}/delete
+
+> Eliminar una cortesía de la base de datos.
+
+Este endpoint se utiliza para eliminar un registro de la base de datos, recibe por url en forma de `slug` el `id` 
+del registro que se quiere eliminar.
+
+Para este endpoint se utiliza el método `delete`.
+
+<Callout type="info">
+Nota: Se debe tener en cuenta que el registro no se elimina físicamente de la tabla en la base datos, solo 
+se llena el campo `delete_at` en la base de datos con la fecha en que se realizó la opción, el registro 
+no será mostrado en el front-end, es decir no será consultable, sin embargo es de utilidad manejar estos 
+`Sonft Deletes` para auditorías.
+</Callout>
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function delete(Request $request, Response $response, $args){ 
+    // Datos iniciales de respuesta
+    $dataJson = [
+        "success" => false,
+        "error" => false,
+        "message" => "",
+        "deleted" => false,
+    ];
+
+    $contentType = $request->getHeaderLine('Content-Type');
+    $data = $request->getParsedBody();
+    
+    // Decodificar el cuerpo de la solicitud si es JSON
+    if (str_contains($contentType, 'application/json')) {
+        $data = json_decode($request->getBody()->getContents(), true);
+    }
+
+    try{
+        $id = $args['id'] ?? '';
+
+
+        if(!$id){
+            $dataJson["error"] = true;
+            $dataJson["message"] = "Reservation is require";
+            $response->getBody()->write(json_encode($dataJson));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400); // Bad Request
+        }
+
+        $reservation = $this->reservationModel::find($id);
+
+        if(!$reservation){  
+            $dataJson["error"] = true;
+            $dataJson["message"] = "Reservation not found";
+            $response->getBody()->write(json_encode($dataJson));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404); // Bad Request
+        }
+
+        if ($reservation->reclaimed) {
+            $dataJson["error"] = true;
+            $dataJson["message"] = "No tienes permisos de eliminar este registro.";
+            $response->getBody()->write(json_encode($dataJson));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(403); // Bad Request
+        }
+
+        if ($reservation->visite_date && Carbon::parse($reservation->visite_date)->lt(Carbon::now())) {
+            $dataJson["error"] = true;
+            $dataJson["message"] = "No se puede eliminar la reserva porque su fecha de visita ya pasó.";
+            $response->getBody()->write(json_encode($dataJson));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(403); // Bad Request
+        }
+
+        Capsule::beginTransaction();
+
+        $reservation->delete();
+        
+        $primerNombre = explode(' ', trim($reservation->user->nombre))[0];
+        $fechaEliminacion = Carbon::parse($reservation->deleted_at)
+            ->locale('es')
+            ->isoFormat('D [de] MMMM [de] YYYY [a las] h:mm A');
+        $html = Mailer::renderTemplate(
+            companyName: 'Fundación Parque Jaime Duque',
+            title: $primerNombre,
+            messageHtml: "En este momento tu descuento ha sido eliminado de nuestro sistema con el número de reserva <strong>{$reservation->reservation_number}</strong> el <strong>{$fechaEliminacion}</strong>, si tienes alguna duda comunícate con nosotros. <br> <br> Recuerda que, si se presenta algún inconveniente en el proceso de reserva, debes comunicarte directamente con el hotel, la Fundación Parque Jaime Duque únicamente valida el beneficio.",
+        );
+
+        $isSend = Mailer::send($reservation->user->email, "Notificación Automática - Eliminación de descuento", $html);
+        if(!$isSend){
+            throw new Exception("No se pudo enviar el correo electrónico");
+        }
+        Capsule::commit();
+
+        $dataJson["success"] = true;
+        $dataJson["message"] = "Reservación eliminada con éxito.";
+        $dataJson["deleted"] = true;
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200); // Bad Request
+    } catch (Exception $e) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = "An unexpected error occurred.";
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500); // Internal Server Error
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+### POST /api/courtesy-records/\{month}/\{hotel}/\{year}/excel
+
+> Obtener excel por rango de fechas y hotel.
+
+Este endpoint es de utilidad, sirve para extraer la información de la base de datos de los registros existentes, 
+recibe varios parámetros `slug` en la url.
+
+#### Campos slug
+
+| input | type | description |
+|-------|------|-------------|
+| `month` | string | Es el nombre en español del mes del cual se quiere extraer información |
+| `hotel` | string | Es el `id` que identifica el registro del hotel en la base de datos |
+| `year` | string | Es el año del cual se quiere extraer la información, en conjuto con el mes parametrizado |
+
+> Al final la respuesta es dada con la siguiente cabecera:
+
+```json
+{
+  "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+}
+```
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function excelMonth(Request $request, Response $response, $args)
+{
+    $dataJson = [
+        "error" => false,
+        "message" => "",
+    ];
+
+    $monthName = strtolower($args['month'] ?? ''); // mes en español, en minúsculas
+    $year = $args['year'] ?? date('Y');
+    $hotel = $args['hotel'] ?? null;
+
+    $meses = [
+        'enero' => 1,
+        'febrero' => 2,
+        'marzo' => 3,
+        'abril' => 4,
+        'mayo' => 5,
+        'junio' => 6,
+        'julio' => 7,
+        'agosto' => 8,
+        'septiembre' => 9,
+        'octubre' => 10,
+        'noviembre' => 11,
+        'diciembre' => 12,
+    ];
+
+    $mesNumero = $meses[$monthName] ?? null;
+    $añoActual = $year;
+
+    $query = $this->reservationModel::with('receptionistUser.worth', 'user', 'hotelGuests.user')
+        ->whereMonth('visite_date', $mesNumero)
+        ->whereYear('visite_date', $añoActual)
+        ->orderBy('id', 'DESC');
+
+    $records = $query->where(function ($q) use ($hotel) {
+        $q->whereHas('receptionistUser', function ($query) use ($hotel) {
+            $query->where('worth_id', $hotel);
+        });
+    })->get();
+
+    // Si no hay registros, devolver un mensaje informativo
+    if ($records->isEmpty()) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = "No se encontraron registros para exportar";
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+    }
+
+    // Mapear los registros para crear el array de datos
+    $dataArray = $records->map(function ($record) {
+        $guests = is_array($record->hotel_guests)
+            ? collect($record->hotel_guests)
+            : collect($record->hotelGuests?->all() ?? []);
+
+        $claimedGuests = $guests->filter(fn($guest) => !empty($guest->reclaimed))->count();
+        $notClaimedGuests = $guests->count() - $claimedGuests;
+
+        $ownerClaimed = $record->reclaimed ? 1 : 0;
+        $ownerNotClaimed = $record->reclaimed ? 0 : 1;
+
+        $totalClaimed = $claimedGuests + $ownerClaimed;
+        $totalNotClaimed = $notClaimedGuests + $ownerNotClaimed;
+        $totalGuests = $guests->count();
+
+    
+        return [
+            'id' => $record->id,
+            'nombre' => $record->user->nombre,
+            'apellido' => $record->user->apellido,
+            'documento' => $record->user->documento,
+            'email' => $record->user->email,
+            'reservation_number' => (string) $record->reservation_number,
+            'hotel' => $record->receptionistUser->worth->name,
+            'visite_date' => $record->visite_date,
+            'hotel_guests' => $totalGuests,
+            'reclaimed' => $totalClaimed,
+            'no_reclaimed' => $totalNotClaimed,
+        ];
+    })->toArray();        
+
+    // Definir las columnas para el reporte
+    $columns = [
+        'id' => 'ID',
+        'nombre' => 'Nombre',
+        'apellido' => 'Apellido',
+        'documento' => 'Documento',
+        'email' => 'Email',
+        'reservation_number' => 'Numero de reservación',
+        'hotel' => 'Hotel',
+        'visite_date' => 'Día de visita',
+        'hotel_guests' => 'Acompañantes',
+        'reclaimed' => 'Reclamos',
+        'no_reclaimed' => 'No reclamados',
+    ];
+
+    try {
+        // Generar el reporte Excel usando la función genérica
+        $filePath = ExcelHelper::generateExcelReport($dataArray, $columns, 'excel.xlsx');
+        $excelData = file_get_contents($filePath);
+
+        // Configurar la respuesta con el archivo Excel
+        $response->getBody()->write($excelData);
+        return $response
+            ->withHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            ->withHeader('Content-Disposition', 'attachment; filename="audit_report.xlsx"')
+            ->withHeader('Content-Length', (string) filesize($filePath))
+            ->withStatus(200);
+
+    } catch (Exception $e) {
+        $dataJson["error"] = true;
+        $dataJson["message"] = "Error generando el archivo Excel: " . $e->getMessage();
+        $response->getBody()->write(json_encode($dataJson));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
+}
+```
+</CodeCollapsibleWrapper>
+
+### GET /api/courtesy-records/chart
+
+> Obtener datos analíticos para gráficas.
+
+<CodeCollapsibleWrapper>
+```php title="hoteles-backend/src/Controlles/ReservationsController.php" showLineNumbers
+public function chart(Request $request, Response $response, $args)
+{
+    $currentYear = (int) ($request->getQueryParams()['year'] ?? date('Y'));
+
+    $dataJson = [
+        "success" => false,
+        "error" => false,
+        "message" => "",
+        "data" => [],
+        "availableYears" => [],
+    ];
+
+    // Obtener todos los años únicos disponibles en las reservas
+    $availableYears = $this->reservationModel
+        ->selectRaw('YEAR(visite_date) as year')
+        ->distinct()
+        ->pluck('year')
+        ->toArray();
+
+    // Obtener reservas solo del año actual o del año indicado
+    $reservations = $this->reservationModel
+        ->with(['receptionistUser.worth', 'hotelGuests'])
+        ->whereYear('visite_date', $currentYear)
+        ->get();
+
+    $grouped = [];
+
+    foreach ($reservations as $reservation) {
+        $worth = $reservation->receptionistUser->worth;
+
+        if (!$worth) continue;
+
+        $hotelId = $worth->id;
+        $hotelName = $worth->name;
+
+        $month = ucfirst(Carbon::parse($reservation->visite_date)->locale('es')->isoFormat('MMMM'));
+
+        if (!isset($grouped[$hotelId])) {
+            $grouped[$hotelId] = [
+                'id' => $hotelId,
+                'hotel' => $hotelName,
+                'months' => [],
+            ];
+        }
+
+        if (!isset($grouped[$hotelId]['months'][$month])) {
+            $grouped[$hotelId]['months'][$month] = [
+                'claimed' => 0,
+                'noClaimed' => 0,
+            ];
+        }
+
+        // Contar guests
+        $guests = is_array($reservation->hotel_guests) ? $reservation->hotel_guests : $reservation->hotelGuests?->all() ?? [];
+
+        $claimedGuests = 0;
+        $notClaimedGuests = 0;
+
+        foreach ($guests as $guest) {
+            if (!empty($guest->reclaimed)) {
+                $claimedGuests++;
+            } else {
+                $notClaimedGuests++;
+            }
+        }
+
+        // Contar dueño
+        $ownerClaimed = $reservation->reclaimed ? 1 : 0;
+        $ownerNotClaimed = $reservation->reclaimed ? 0 : 1;
+
+        // Sumar totales
+        $totalClaimed = $claimedGuests + $ownerClaimed;
+        $totalNotClaimed = $notClaimedGuests + $ownerNotClaimed;
+
+        // Acumular al grupo del mes
+        $grouped[$hotelId]['months'][$month]['claimed'] += $totalClaimed;
+        $grouped[$hotelId]['months'][$month]['noClaimed'] += $totalNotClaimed;
+    }
+
+    // Ordenar y formatear
+    $chartData = [];
+    $orderedMonths = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    foreach ($grouped as $hotelGroup) {
+        $monthsFormatted = [];
+
+        foreach ($orderedMonths as $monthName) {
+            $data = $hotelGroup['months'][$monthName] ?? ['claimed' => 0, 'noClaimed' => 0];
+            $monthsFormatted[] = array_merge(['date' => $monthName], $data);
+        }
+
+        $chartData[] = [
+            'id' => $hotelGroup['id'],
+            'hotel' => $hotelGroup['hotel'],
+            'months' => $monthsFormatted,
+        ];
+    }
+
+    $dataJson['success'] = true;
+    $dataJson['data'] = $chartData;
+    $dataJson['availableYears'] = $availableYears;
+
+    $response->getBody()->write(json_encode($dataJson));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+}
+```
+</CodeCollapsibleWrapper>
+
+
+### GET /api/courtesy-records/chartSummary
+
+> Obtener resumen estadístico para las gráficos.
+
+### GET /api/courtesy-records/\{month}/\{hotel}/\{year}
+
+> Obtener registros y conteo por mes.
